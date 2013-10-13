@@ -1,0 +1,174 @@
+body {
+	font-family: Arial;
+	font-size: 12px;
+}
+
+#background {
+	background: linear-gradient(to bottom, #00b7ea 0%, #00FFF6 100%);
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	z-index: 1;
+}
+
+#container {
+	position: relative;
+	z-index: 2;
+	background-color: #eeeeee;
+	padding: 5px;
+	border: 1px solid #333333;
+	max-width: 1000px;
+	min-width: 688px;
+	margin: 0 auto;
+}
+
+.gray-bar {
+	background-image: url('../img/graybar.png');
+	height: 15px;
+	width: 50px;
+}
+
+.gold-bar {
+	background-image: url('../img/goldbar.png');
+	height: 15px;
+}
+
+#loading-note, #no-results {
+	font-weight: bold;
+	font-size: 20px;
+	padding: 50px;
+}
+
+#no-results {
+	display: none;
+}
+
+.rating-cell {
+	width: 50px;
+	padding: 0 5px;
+}
+
+.location-cell {
+	width: 75px;
+	text-align: center;
+}
+
+.genre-cell, .system-cell {
+	width: 60px;
+	padding: 0 5px;
+}
+
+.title-cell {
+	padding-left: 15px;
+}
+
+#results-table {
+	width: 100%;
+	padding: 10px;
+}
+
+tr.hover {
+	background-color: lightblue;
+}
+
+.system {
+	display: none;
+}
+
+.nav-button {
+	font-size: 24px;
+	display: inline-block;
+	padding: 8px;
+	cursor: pointer;
+}
+
+.selected {
+	background-color: #cccccc;
+}
+
+#games, #login, #add {
+	display: none;
+}
+
+#results-count {
+	font-weight: bold;
+}
+
+.beaten-cell, .seen-cell {
+	text-align: center;
+}
+
+.form-type-button {
+	display: inline-block;
+	font-size: 24px;
+	background-color: #9bc8cb;
+	border: 2px solid black;
+	margin: 25px;
+	padding: 10px;
+	cursor: pointer;
+}
+
+.form-field-title-cell {
+	text-align: right;
+	padding-right: 10px;
+}
+
+.add-form {
+	display: none;
+	float: left;
+}
+
+#movie-title-field, #game-title-field, #movie-alphabeticaltitle-field, #game-alphabeticaltitle-field {
+	width: 350px;
+}
+
+#movie-location-field, #game-location-field {
+	width: 100px;
+	text-align: center;
+}
+
+#movie-rating-field, #game-rating-field, #movie-discs-field, #game-discs-field {
+	width: 25px;
+	text-align: center;
+}
+
+#game-system-field {
+	width: 150px;
+}
+
+#game-genre-field {
+	width: 100px;
+}
+
+#movie-genre-field {
+	width: 205px;
+}
+
+#form-errors {
+	color: red;
+	padding: 15px;
+}
+
+#search-results {
+	float: left;
+	padding-left: 30px;
+	max-width: 410px;
+}
+
+.clearfix {
+	clear: both;
+}
+
+.toggled {
+	background-color: teal;
+}
+
+.search-result {
+	cursor: pointer;
+}
+
+.search-result:hover {
+	background-color: lightblue;
+}

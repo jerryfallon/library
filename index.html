@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+
+		<script type="text/javascript" src="js/libraries/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" src="js/libraries/handlebars.js"></script>
+		<script type="text/javascript" src="js/libraries/sha3.js"></script>
+		<script type="text/javascript" src="js/libraries/jquery.cookie.js"></script>
+
+		<script type="text/javascript" src="js/Db.js"></script>
+		<script type="text/javascript" src="js/List.js"></script>
+		<script type="text/javascript" src="js/Add.js"></script>
+		<script type="text/javascript" src="js/init.js"></script>
+	</head>
+	<body>
+		<div id="background"></div>
+		<div id="container">
+			<div id="nav">
+				<span class="nav-button selected" data-section="movies">Movies</span>
+				<span class="nav-button" data-section="games">Games</span>
+				<span class="nav-button" data-section="login">Login</span>
+				<span class="nav-button" data-section="add">Add</span>
+			</div>
+			<div id="movies" class="section">
+				<input type="checkbox" class="list-form" id="movies-checked-out" /> Checked Out Only
+				<input type="checkbox" class="list-form" id="movies-unseen" /> Unseen Only<br/>
+				Rating <select class="list-form" id="movies-rating"></select>
+				Title <input type="text" class="list-form" id="movies-title" />
+				Genre <select class="list-form" id="movies-genre"></select><br/>
+			</div>
+			<div id="games" class="section">
+				<input type="checkbox" class="list-form" id="games-checked-out" /> Checked Out Only
+				<select class="list-form" id="games-beaten"></select> Status
+				<select class="list-form" id="games-genre"></select> Genre<br/>
+				Rating <select class="list-form" id="games-rating"></select>
+				Title <input type="text" class="list-form" id="games-title" />
+				System <select class="list-form" id="games-system"></select>
+			</div>
+			<div id="login" class="section">
+				Username: <input type="text" id="username" /><br/>
+				Password: <input type="password" id="password" /><br/>
+				<input type="submit" id="login-button" value="Login" />
+			</div>
+			<div id="add" class="section">
+				<span class="form-type-button" data-type="movies">Movie</span>
+				<span class="form-type-button" data-type="games">Game</span>
+				<div id="form-errors"></div>
+				<div id="form-success"></div>
+				<input type="hidden" id="entry-id" />
+				<div class="add-form" id="movies-form"></div>
+				<div class="add-form" id="games-form"></div>
+				<div id="search-results"></div>
+				<div class="clearfix"></div>
+			</div>
+			<div id="results">
+				<span id="results-count"></span>
+				<table id="results-table" cellpadding="0" cellspacing="0">
+					<tr>
+						<th>Rating</th>
+						<th>Title</th>
+						<th>Location</th>
+						<th class="movies-field">Seen</th>
+						<th class="games-field">Beaten</th>
+						<th class="games-field">System</th>
+						<th colspan="3">Genres</th>
+					</tr>
+					<tr>
+						<td id="loading-note" colspan="7">Loading, calm yourself...</td>
+					</tr>
+					<tr>
+						<td id="no-results" colspan="7">No Matches</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</body>
+</html>
+
+<script id="template-options" type="text/x-handlebars-template">
+	<option value="{{value}}">{{text}}</option>
+</script>
+
+<script id="template-result-row" type="text/x-handlebars-template">
+	<tr class="result-row" data-id="{{id}}">
+		<td class="rating-cell"><div class="gray-bar"><div class="gold-bar" style="width: {{rating}}px;"></div></div></td>
+		<td class="title-cell">{{title}}</td>
+		<td class="location-cell">{{location}}</td>
+		{{#if seen}}
+			<td class="seen-cell"><img src="img/seen{{seen}}.png" /></td>
+		{{/if}}
+		{{#if beaten}}
+			<td class="beaten-cell"><img src="img/beaten{{beaten}}.png" /></td>
+		{{/if}}
+		{{#if system}}
+			<td class="system-cell"><img src="img/system{{system}}.gif" /></td>
+		{{/if}}
+		{{#list genres}}
+			<td class="genre-cell"><img src="img/genre{{id}}.png" /></td>
+		{{/list}}
+	</tr>
+</script>
+
+<script id="template-text-field" type="text/x-handlebars-template">
+	<tr>
+		<td class="form-field-title-cell">{{title}}</td>
+		<td><input type="text" id="{{type}}-{{field}}-field" value="{{value}}"/></td>
+	</tr>
+</script>
+
+<script id="template-checkbox-field" type="text/x-handlebars-template">
+	<tr>
+		<td class="form-field-title-cell">{{title}}</td>
+		<td><input type="checkbox" id="{{type}}-{{field}}-field" /></td>
+	</tr>
+</script>
+
+<script id="template-submit-field" type="text/x-handlebars-template">
+	<tr>
+		<td></td>
+		<td><input type="submit" id="{{type}}-submit" class="form-submit" value="Submit" /></td>
+	</tr>
+</script>
+
+<script id="template-select-field" type="text/x-handlebars-template">
+	<tr>
+		<td class="form-field-title-cell">{{title}}</td>
+		<td><select id="{{type}}-{{field}}-field">
+		{{#list options}}
+			<option value="{{genId}}{{sysId}}">{{genrename}}{{systemname}}</option>
+		{{/list}}
+		</select></td>
+	</tr>
+</script>
+
+<script id="template-search-result" type="text/x-handlebars-template">
+	<span class="search-result" data-id="{{id}}">{{title}}</span><br/>
+</script>
