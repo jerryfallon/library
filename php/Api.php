@@ -44,6 +44,18 @@
 			}
 		}
 
+		private function delete($from, $where) {
+			$sql = 'DELETE FROM ' . $from;
+			$sql .= ' WHERE ' . $where;
+			$this->db->executeSql($sql, 'delete');
+		}
+
+		private function deleteLinks($table, $where) {
+			$from = $table;
+			$where = $where->column . ' = "' . $where->value . '"';
+			return $this->delete($from, $where);
+		}
+
 		public function getData($table, $filters, $sort) {
 			if($table === 'movies') {
 				$from = 'movies x, entry_genre eg, genres g';
@@ -142,7 +154,7 @@
 		public function updateData($table, $where, $data) {
 			$from = $table;
 			if($where = json_decode($where)) {
-				$where = mysql_real_escape_string($where->column) . ' = "' . mysql_real_escape_string($where->value) . '"';
+				$where2 = mysql_real_escape_string($where->column) . ' = "' . mysql_real_escape_string($where->value) . '"';
 			}
 			$set = '';
 			if($data = json_decode($data)) {
@@ -151,10 +163,29 @@
 					if($value->column !== 'genre') {
 						$set .= ($count ? ', ' : '') . mysql_real_escape_string($value->column) . ' = "' . mysql_real_escape_string($value->value) . '"';
 						$count++;
+					} else {
+						$genre = $value;
 					}
 				}
 			}
-			return $this->update($from, $where, $set);
+			$this->update($from, $where2, $set);
+
+
+			$this->deleteLinks('entry_genre', $where);
+
+			// Add links
+			if($genre) {
+				$data = array();
+				$row = new stdClass();
+				$row->column = 'genId';
+				$row->value = $genre->value;
+				$data[] = $row;
+				$data[] = $where;
+				$table = 'entry_genre';
+
+				$this->insert($table, $data);
+			}
+
 		}
 	}
 

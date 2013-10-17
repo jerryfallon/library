@@ -120,35 +120,43 @@ tr.hover {
 	float: left;
 }
 
-#movie-title-field, #game-title-field, #movie-alphabeticaltitle-field, #game-alphabeticaltitle-field {
+#movies-title-field, #games-title-field, #movies-alphabeticaltitle-field, #games-alphabeticaltitle-field {
 	width: 350px;
 }
 
-#movie-location-field, #game-location-field {
+#movies-location-field, #games-location-field {
 	width: 100px;
 	text-align: center;
 }
 
-#movie-rating-field, #game-rating-field, #movie-discs-field, #game-discs-field {
+#movies-rating-field, #games-rating-field, #movies-discs-field, #games-discs-field {
 	width: 25px;
 	text-align: center;
 }
 
-#game-system-field {
+#games-system-field {
 	width: 150px;
 }
 
-#game-genre-field {
+#games-genre-field {
 	width: 100px;
 }
 
-#movie-genre-field {
+#movies-genre-field {
 	width: 205px;
 }
 
 #form-errors {
 	color: red;
 	padding: 15px;
+	display: none;
+}
+
+#form-success {
+	padding: 15px;
+	font-weight: bold;
+	font-size: 18px;
+	display: none;
 }
 
 #search-results {

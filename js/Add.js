@@ -18,8 +18,8 @@ function Add() {
 			{ title: 'Alphabetical Title', type: 'text', field: 'alphabeticaltitle', rules: ['notnull'] },
 			{ title: 'Genre', type: 'select', field: 'genre', multiple: true, data: [] },
 			{ title: 'Location', type: 'text', field: 'location', value: 'In Stock' },
-			{ title: 'System', type: 'select', field: 'system', data: [], rules: ['notnull'] },
-			{ title: 'Beaten', type: 'checkbox', field: 'seen' },
+			{ title: 'System', type: 'select', field: 'sysId', data: [], rules: ['notnull'] },
+			{ title: 'Beaten', type: 'checkbox', field: 'beaten' },
 			{ title: 'Rating', type: 'text', field: 'rating', value: 0, rules: ['number'] },
 			{ title: 'Discs', type: 'text', field: 'discs', value: 1, rules: ['number'] },
 			{ type: 'submit' }
@@ -138,7 +138,7 @@ Add.prototype.buildForms = function() {
 							this.addSelectField(field.title, type, field.field, this[type + 'Genres']);
 							break;
 
-						case 'system':
+						case 'sysId':
 							this.addSelectField(field.title, type, field.field, this.systems);
 							break;
 					}
@@ -181,7 +181,7 @@ Add.prototype.gatherData = function() {
 			if(field.type === 'text' || field.type === 'select') {
 				val = $('#'+this.type+'-'+col+'-field').val();
 			} else if(field.type === 'checkbox') {
-				if($('#'+this.type+'-'+col+'-field').val() === 'on') {
+				if($('#'+this.type+'-'+col+'-field').prop('checked') === true) {
 					val = 1;
 				} else {
 					val = 0;
@@ -243,7 +243,7 @@ Add.prototype.populateForm = function(id) {
 					val = row[col];
 					$(selector).val(val);
 				} else if(field.type === 'checkbox') {
-					if(row[field.field]) {
+					if(row[field.field] > 0) {
 						$(selector).prop('checked',true);
 					} else {
 						$(selector).prop('checked',false);
@@ -270,6 +270,8 @@ Add.prototype.resetForm = function() {
 			}
 		}
 	}
+	$('#search-results').html('');
+	this.searchResults = [];
 };
 
 Add.prototype.search = function(val, col, cb) {
@@ -310,13 +312,12 @@ Add.prototype.submitForm = function() {
 		if($('#entry-id').val()) {
 			var where = { column: this.getIdType(), value: $('#entry-id').val() };
 			db.updateData(this.type, this.gatherData(), where, function(results) {
-				console.log(results);
-				console.log('updated successfully');
+				$('.nav-button[data-section='+that.type+']').click();
 			});
 		} else {
 			db.addData(this.type, this.gatherData(), function(results) {
 				console.log(results);
-				$('#form-success').text(this.type + ' #' + results + ' added successfully');
+				$('#form-success').text('#' + results + ' added to ' + that.type + ' successfully').show();
 				that.resetForm();
 			});
 		}
@@ -357,6 +358,10 @@ Add.prototype.validateForm = function() {
 			}
 		}
 	}
-	$('#form-errors').html(err);
+	if(err) {
+		$('#form-errors').html(err).show();
+	} else {
+		$('#form-errors').hide();
+	}
 	return pass;
 };

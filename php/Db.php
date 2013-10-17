@@ -12,7 +12,7 @@
 			if($result = mysql_query($sql)) {
 				if($type === 'insert') {
 					return mysql_insert_id();
-				} elseif($type === 'update') {
+				} elseif($type === 'update' || $type === 'delete') {
 					return 'Success';
 				} else {
 					$array = array();

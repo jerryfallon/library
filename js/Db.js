@@ -3,11 +3,11 @@ function Db() {
 }
 
 Db.prototype.addData = function(table, vals, cb) {
-	//console.log('add to table ' + table + 's');
-	//console.log(JSON.stringify(vals));
+	console.log('add to table ' + table + 's');
+	console.log(JSON.stringify(vals));
 	var data = {
 		command: 'addData',
-		table: table+'s',
+		table: table,
 		data: JSON.stringify(vals)
 	};
 	console.log(data);
@@ -102,7 +102,6 @@ Db.prototype.updateData = function(table, vals, where, cb) {
 		where: JSON.stringify(where),
 		data: JSON.stringify(vals)
 	};
-	console.log(data);
 	$.post(this.apiUrl, data, function(results) {
 		if(typeof cb === 'function') {
 			cb(results);
