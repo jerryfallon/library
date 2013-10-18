@@ -191,6 +191,8 @@ List.prototype.setupEditFunctionality = function() {
 	});
 
 	$('.result-row').css('cursor','pointer');
+
+	$('.nav-button[data-section=add]').show();
 };
 
 List.prototype.showSection = function(id) {
