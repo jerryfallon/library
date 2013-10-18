@@ -21,22 +21,23 @@
 
 				// Add links
 				if($genre) {
-					$data = array();
-					$row = new stdClass();
-					$row2 = new stdClass();
-					$row->column = 'genId';
-					$row->value = $genre->value;
-					$data[] = $row;
-					if($table === 'movies') {
-						$row2->column = 'movId';
-					} else {
-						$row2->column = 'gamId';
-					}
-					$row2->value = $id;
-					$data[] = $row2;
-					$table = 'entry_genre';
+					foreach($genre->value as $genId) {
+						$data = array();
+						$row = new stdClass();
+						$row2 = new stdClass();
+						$row->column = 'genId';
+						$row->value = $genId;
+						$data[] = $row;
+						if($table === 'movies') {
+							$row2->column = 'movId';
+						} else {
+							$row2->column = 'gamId';
+						}
+						$row2->value = $id;
+						$data[] = $row2;
 
-					$this->insert($table, $data);
+						$this->insert('entry_genre', $data);
+					}
 				}
 
 				return $id;
@@ -58,17 +59,19 @@
 
 		public function getData($table, $filters, $sort) {
 			if($table === 'movies') {
-				$from = 'movies x, entry_genre eg, genres g';
-				$where = 'x.movId = eg.movId AND eg.genId = g.genId';
+				$select = 'x.movId, x.title, x.alphabeticaltitle, x.location, x.seen, x.rating, x.discs, g.genId';
+				$from = 'movies x LEFT JOIN entry_genre eg ON x.movId = eg.movId LEFT JOIN genres g ON eg.genId = g.genId';
 			} elseif($table === 'games') {
-				$from = 'games x, entry_genre eg, genres g, systems s';
-				$where = 'x.gamId = eg.gamId AND eg.genId = g.genId AND x.sysId = s.sysId';
+				$select = 'x.gamId, x.title, x.alphabeticaltitle, x.location, x.beaten, x.rating, x.discs, g.genId, s.systemname';
+				$from = 'games x LEFT JOIN entry_genre eg ON x.gamId = eg.gamId LEFT JOIN genres g ON eg.genId = g.genId LEFT JOIN systems s ON x.sysId = s.sysId';
 			}
 		
+			$where = '';
 			if(!empty($filters)) {
 				if($filters = json_decode($filters)) {
+					$count = 0;
 					foreach($filters as $filter) {
-						$where .= ' AND ' . mysql_real_escape_string($filter->column);
+						$where .= ($count ? ' AND ' : '') . mysql_real_escape_string($filter->column);
 						if($filter->condition === 'not') {
 							$where .= ' NOT LIKE "%' . mysql_real_escape_string($filter->value) . '%"';
 						} else if($filter->condition === 'equals') {
@@ -76,6 +79,7 @@
 						} else {
 							$where .= ' LIKE "%' . mysql_real_escape_string($filter->value) . '%"';
 						}
+						$count++;
 					}
 				}
 			}
@@ -90,22 +94,58 @@
 					}
 				}
 			}
+			$order .= (strlen($order)>0 ? ', ' : '') . 'x.alphabeticaltitle ASC';
 
-			return $this->selectDistinct($from, $where, $order);
+			$results = $this->selectDistinct($from, $where, $order, $select);
+			//print_r($results);
+			
+			$lastId = 0;
+			$genIds = array();
+			$data = array();
+			$count = 0;
+			foreach($results as $key => $result) {
+				$thisId = $result[($table === 'movies' ? 'movId' : 'gamId')];
+				if($thisId === $lastId) {
+					$genIds[] = $result['genId'];
+					//print_r($genIds);
+				} else {
+					if($count > 0) {
+						if(count($genIds) > 0) {
+							$results[$key-1]['genIds'] = $genIds;
+						}
+						unset($results[$key-1]['genId']);
+						unset($results[$key-1]['entGenId']);
+						$data[] = $results[$key-1];
+					}
+					$genIds = array();
+					if($result['genId']) {
+						$genIds[] = $result['genId'];
+					}
+				}
+				$lastId = $thisId;
+				$count++;
+			}
+			if(count($genIds) > 0) {
+				$results[$key]['genIds'] = $genIds;
+			}
+			unset($results[$key]['genId']);
+			unset($results[$key]['entGenId']);
+			$data[] = $results[$key];
+			return $data;
 		}
 
 		public function getGenres($type) {
 			$from = 'genres';
 			$where = 'type = "' . mysql_real_escape_string($type) . '"';
 			$order = 'genrename ASC';
-			return $this->selectDistinct($from, $where, $order);
+			return $this->selectDistinct($from, $where, $order, '');
 		}
 
 		public function getSystems() {
 			$from = 'systems';
 			$where = null;
 			$order = 'systemname ASC';
-			return $this->selectDistinct($from, $where, $order);
+			return $this->selectDistinct($from, $where, $order, '');
 		}
 
 		public function insert($table, $data) {
@@ -132,8 +172,9 @@
 			return $this->selectDistinct($from, $where, $order);
 		}
 
-		private function selectDistinct($from, $where, $order) {
-			$sql = 'SELECT DISTINCT * FROM ' . $from;
+		private function selectDistinct($from, $where, $order, $select) {
+			$sql = 'SELECT DISTINCT ' . ($select ? $select : '*');
+			$sql .= ' FROM ' . $from;
 			if(!empty($where)) {
 				$sql .= ' WHERE ' . $where;
 			}
@@ -175,17 +216,24 @@
 
 			// Add links
 			if($genre) {
-				$data = array();
-				$row = new stdClass();
-				$row->column = 'genId';
-				$row->value = $genre->value;
-				$data[] = $row;
-				$data[] = $where;
-				$table = 'entry_genre';
+				foreach($genre->value as $genId) {
+					$data = array();
+					$row = new stdClass();
+					$row2 = new stdClass();
+					$row->column = 'genId';
+					$row->value = $genId;
+					$data[] = $row;
+					if($table === 'movies') {
+						$row2->column = 'movId';
+					} else {
+						$row2->column = 'gamId';
+					}
+					$row2->value = $where->value;
+					$data[] = $row2;
 
-				$this->insert($table, $data);
+					$this->insert('entry_genre', $data);
+				}
 			}
-
 		}
 	}
 

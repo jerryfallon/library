@@ -6,7 +6,7 @@ function Add() {
 		'movies': [
 			{ title: 'Title', type: 'text', field: 'title', rules: ['notnull'] },
 			{ title: 'Alphabetical Title', type: 'text', field: 'alphabeticaltitle', rules: ['notnull'] },
-			{ title: 'Genre', type: 'select', field: 'genre', multiple: true, data: [] },
+			{ title: 'Genre', type: 'multiple', field: 'genre', data: [] },
 			{ title: 'Location', type: 'text', field: 'location', value: 'In Stock' },
 			{ title: 'Seen', type: 'checkbox', field: 'seen' },
 			{ title: 'Rating', type: 'text', field: 'rating', value: 0, rules: ['number'] },
@@ -16,7 +16,7 @@ function Add() {
 		'games': [
 			{ title: 'Title', type: 'text', field: 'title', rules: ['notnull'] },
 			{ title: 'Alphabetical Title', type: 'text', field: 'alphabeticaltitle', rules: ['notnull'] },
-			{ title: 'Genre', type: 'select', field: 'genre', multiple: true, data: [] },
+			{ title: 'Genre', type: 'multiple', field: 'genre', data: [] },
 			{ title: 'Location', type: 'text', field: 'location', value: 'In Stock' },
 			{ title: 'System', type: 'select', field: 'sysId', data: [], rules: ['notnull'] },
 			{ title: 'Beaten', type: 'checkbox', field: 'beaten' },
@@ -26,8 +26,8 @@ function Add() {
 		]
 	};
 
-	this.gameGenres = [];
-	this.movieGenres = [];
+	this.gamesGenres = [];
+	this.moviesGenres = [];
 	this.systems = [];
 
 	this.searchResults = [];
@@ -81,6 +81,18 @@ Add.prototype.addCheckboxField = function(title, type, field) {
 		title: title,
 		type: type,
 		field: field
+	};
+	$('#'+type+'-form').append(template(context));
+};
+
+Add.prototype.addMultipleField = function(title, type, field, results) {
+	var source = $('#template-multiple-field').html();
+	var template = Handlebars.compile(source);
+	var context = {
+		title: title,
+		type: type,
+		field: field,
+		options: results
 	};
 	$('#'+type+'-form').append(template(context));
 };
@@ -151,6 +163,10 @@ Add.prototype.buildForms = function() {
 				case 'submit':
 					this.addSubmitField(type);
 					break;
+
+				case 'multiple':
+					this.addMultipleField(field.title, type, field.field, this[type + 'Genres']);
+					break;
 			}
 		}
 	}
@@ -173,7 +189,7 @@ Add.prototype.editEntry = function(type, id) {
 
 Add.prototype.gatherData = function() {
 	var data = [];
-	var field;
+	var field, num;
 	for(var i in this.schema[this.type]) {
 		field = this.schema[this.type][i];
 		if(field.type !== 'submit') {
@@ -186,17 +202,28 @@ Add.prototype.gatherData = function() {
 				} else {
 					val = 0;
 				}
+			} else if(field.type === 'multiple') {
+				val = [];
+				if(col === 'genre') {
+					for(var j in this[this.type+'Genres']) {
+						genre = this[this.type+'Genres'][j];
+						if($('#'+this.type+'-'+col+'-'+genre.genId).prop('checked') === true) {
+							val.push(genre.genId);
+						}
+					}
+				}
 			}
 			data.push({column: col, value: val});
 		}
 	}
+	//console.log(JSON.stringify(data));
 	return data;
 };
 
 Add.prototype.getGenres = function(type, cb) {
 	var that = this;
 	db.getGenres(type, function(results) {
-		results.unshift({});
+		//results.unshift({});
 		that[type + 'Genres'] = results;
 		if(typeof cb === 'function') {
 			cb();
@@ -233,9 +260,7 @@ Add.prototype.populateForm = function(id) {
 				field = this.schema[this.type][j];
 				selector = '#'+this.type+'-'+field.field+'-field';
 				if(field.type === 'text' || field.type === 'select') {
-					if(field.field === 'genre') {
-						col = 'genId';
-					} else if(field.field === 'system') {
+					if(field.field === 'system') {
 						col = 'sysId';
 					} else {
 						col = field.field;
@@ -244,9 +269,16 @@ Add.prototype.populateForm = function(id) {
 					$(selector).val(val);
 				} else if(field.type === 'checkbox') {
 					if(row[field.field] > 0) {
-						$(selector).prop('checked',true);
+						$(selector).prop('checked', true);
 					} else {
-						$(selector).prop('checked',false);
+						$(selector).prop('checked', false);
+					}
+				} else if(field.type === 'multiple') {
+					if(field.field === 'genre') {
+						for(var k in row.genIds) {
+							selector = '#'+this.type+'-'+field.field+'-'+row.genIds[k];
+							$(selector).prop('checked', true);
+						}
 					}
 				}
 			}
@@ -257,16 +289,24 @@ Add.prototype.populateForm = function(id) {
 
 Add.prototype.resetForm = function() {
 	$('#entry-id').val('');
-	var field;
+	var field, selector;
 	for(var i in this.schema) {
 		for(var j in this.schema[i]) {
 			field = this.schema[i][j];
 
-			var selector = '#'+this.type+'-'+field.field+'-field';
+			selector = '#'+i+'-'+field.field+'-field';
 			if(field.type === 'text' || field.type === 'select') {
 				$(selector).val((field.value !== undefined ? field.value : ''));
 			} else if(field.type === 'checkbox') {
 				$(selector).prop('checked', false);
+			} else if(field.type === 'multiple') {
+				if(field.field === 'genre') {
+					for(var k in this[i+'Genres']) {
+						genre = this[i+'Genres'][k];
+						selector = '#'+i+'-'+field.field+'-'+genre.genId;
+						$(selector).prop('checked', false);
+					}
+				}
 			}
 		}
 	}

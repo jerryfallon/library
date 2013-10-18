@@ -69,37 +69,25 @@ List.prototype.displayMatches = function(results) {
 
 		var result;
 		var lastId = 0;
+
 		for(var i in results) {
 			result = results[i];
-			if(result[idCol] === lastId) {
-				if(result.genId) {
-					context.genres.push( { id: result.genId });
-				}
-			} else {
-				if(context) {
-					//console.log(context);
-					count++;
-					html += template(context);
-				}
-
-				context = {
-					id: result[idCol],
-					rating: result.rating * 5,
-					title: result.title,
-					location: result.location,
-					system: result.sysId,
-					seen: result.seen,
-					beaten: result.beaten
-				};
-				if(result.genId) {
-					context.genres = [{ id: result.genId }];
-				}
+			context = {
+				id: result[idCol],
+				rating: result.rating * 5,
+				title: result.title,
+				location: result.location,
+				system: result.sysId,
+				seen: result.seen,
+				beaten: result.beaten,
+				genIds: []
 			}
-
-			lastId = result[idCol];
+			for(var j in result.genIds) {
+				context.genIds.push({ id: result.genIds[j] });
+			}
+			//console.log(context);
+			html += template(context);
 		}
-		html += template(context);
-		count++;
 		$('#results-table').append(html);
 
 		if($.cookie('usrId')) {
@@ -108,7 +96,7 @@ List.prototype.displayMatches = function(results) {
 	} else {
 		$('#no-results').show();
 	}
-	$('#results-count').text(count + ' results');
+	//$('#results-count').text(results.length + ' results');
 	this.toggleFields();
 };
 
@@ -213,6 +201,7 @@ List.prototype.toggleFields = function() {
 List.prototype.updateList = function() {
 
 	var that = this;
+
 
 	var filters = [];
 	if(this.type === 'movies') {

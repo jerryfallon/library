@@ -17,6 +17,7 @@
 				} else {
 					$array = array();
 					while($row = mysql_fetch_assoc($result)) {
+						//print_r($row);
 						$array[] = $row;
 					}
 					return $array;

@@ -96,7 +96,7 @@
 		{{#if system}}
 			<td class="system-cell"><img src="img/system{{system}}.gif" /></td>
 		{{/if}}
-		{{#list genres}}
+		{{#list genIds}}
 			<td class="genre-cell"><img src="img/genre{{id}}.png" /></td>
 		{{/list}}
 	</tr>
@@ -128,9 +128,23 @@
 		<td class="form-field-title-cell">{{title}}</td>
 		<td><select id="{{type}}-{{field}}-field">
 		{{#list options}}
-			<option value="{{genId}}{{sysId}}">{{genrename}}{{systemname}}</option>
+			<option value="{{sysId}}">{{genrename}}{{systemname}}</option>
 		{{/list}}
 		</select></td>
+	</tr>
+</script>
+
+<script id="template-multiple-field" type="text/x-handlebars-template">
+	<tr>
+		<td class="form-field-title-cell">{{title}}</td>
+		<td>
+		{{#everyNth options 3}}
+			{{#if isModZeroNotFirst}}
+			<br/>
+			{{/if}}
+			<input type="checkbox" id="{{type}}-{{../field}}-{{genId}}" /> {{genrename}}
+		{{/everyNth}}
+		</td>
 	</tr>
 </script>
 
