@@ -55,7 +55,7 @@ List.prototype.initHandlers = function() {
 };
 
 List.prototype.displayMatches = function(results) {
-	console.log(results);
+	//console.log(results);
 	$('.result-row').remove();
 	$('#loading-note').hide();
 	$('#no-results').hide();

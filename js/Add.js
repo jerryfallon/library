@@ -59,7 +59,7 @@ Add.prototype.initHandlers = function() {
 		that.resetForm();
 	});
 
-	$(document).on('click', '.form-submit', function() {
+	$('.add-form').on('click', '.form-submit', function() {
 		that.submitForm();
 	});
 
@@ -73,6 +73,12 @@ Add.prototype.initHandlers = function() {
 
 		if(that.autoBuildAlphabeticalTitle) {
 			that.buildAlphabeticalTitle($(this).val());
+		}
+	});
+
+	$('.add-form').on('keyup', function(e) {
+		if(e.which == 13) {
+			that.submitForm();
 		}
 	});
 
