@@ -26,6 +26,10 @@ function Add() {
 		]
 	};
 
+	this.stripCharacters = [' ', '_', '-', '.', ',', ';', ':', '\'', '\\'];
+	this.badStartWords = ['A', 'An', 'The'];
+	this.autoBuildAlphabeticalTitle = true;
+
 	this.gamesGenres = [];
 	this.moviesGenres = [];
 	this.systems = [];
@@ -65,6 +69,10 @@ Add.prototype.initHandlers = function() {
 			that.search(val);
 		} else {
 			$('#search-results').html('');
+		}
+
+		if(that.autoBuildAlphabeticalTitle) {
+			that.buildAlphabeticalTitle($(this).val());
 		}
 	});
 
@@ -128,6 +136,25 @@ Add.prototype.addTextField = function(title, type, field, value) {
 		value: value
 	};
 	$('#'+type+'-form').append(template(context));
+};
+
+Add.prototype.buildAlphabeticalTitle = function(val) {
+	//console.log('converting "' + val + '"');
+	
+	var word, cha;
+	for(var i in this.badStartWords) {
+		word = this.badStartWords[i];
+		val = this.replaceStart(word + ' ', '', val);
+	}
+	//console.log('after removing starting articles: ' + val);
+
+	for(i in this.stripCharacters) {
+		cha = this.stripCharacters[i];
+		val = this.replaceAll(cha, '', val);
+	}
+	//console.log('after stripping characters: ' + val);
+
+	$('#' + this.type + '-alphabeticaltitle-field').val(val);
 };
 
 Add.prototype.buildForms = function() {
@@ -287,6 +314,14 @@ Add.prototype.populateForm = function(id) {
 	}
 };
 
+Add.prototype.replaceAll = function(find, replace, str) {
+  return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
+};
+
+Add.prototype.replaceStart = function(find, replace, str) {
+  return str.replace(new RegExp('^' + find), replace);
+};
+
 Add.prototype.resetForm = function() {
 	$('#entry-id').val('');
 	var field, selector;
@@ -326,17 +361,14 @@ Add.prototype.search = function(val, col, cb) {
 		that.searchResults = results;
 		var html = '';
 		var row, context;
-		var lastId = 0;
 		for(var i in results) {
 			row = results[i];
-			if(lastId != row[colId]) {
-				context = {
-					id: row[colId],
-					title: row.title
-				}
-				html += template(context);
+			//console.log(row);
+			context = {
+				id: row[colId],
+				title: row.title
 			}
-			lastId = row[colId];
+			html += template(context);
 		}
 		$('#search-results').html(html);
 

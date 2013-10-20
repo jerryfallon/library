@@ -85,7 +85,7 @@ Db.prototype.select = function(table, filters, sort, cb) {
 		filters: filters,
 		sort: sort
 	};
-	//console.log(data);
+	//console.log(JSON.stringify(data));
 	$.post(this.apiUrl, data, function(results) {
 		if(typeof cb === 'function') {
 			cb(results);

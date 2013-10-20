@@ -99,39 +99,43 @@
 			$results = $this->selectDistinct($from, $where, $order, $select);
 			//print_r($results);
 			
-			$lastId = 0;
-			$genIds = array();
-			$data = array();
-			$count = 0;
-			foreach($results as $key => $result) {
-				$thisId = $result[($table === 'movies' ? 'movId' : 'gamId')];
-				if($thisId === $lastId) {
-					$genIds[] = $result['genId'];
-					//print_r($genIds);
-				} else {
-					if($count > 0) {
-						if(count($genIds) > 0) {
-							$results[$key-1]['genIds'] = $genIds;
-						}
-						unset($results[$key-1]['genId']);
-						unset($results[$key-1]['entGenId']);
-						$data[] = $results[$key-1];
-					}
-					$genIds = array();
-					if($result['genId']) {
+			if(count($results)) {
+				$lastId = 0;
+				$genIds = array();
+				$data = array();
+				$count = 0;
+				foreach($results as $key => $result) {
+					$thisId = $result[($table === 'movies' ? 'movId' : 'gamId')];
+					if($thisId === $lastId) {
 						$genIds[] = $result['genId'];
+						//print_r($genIds);
+					} else {
+						if($count > 0) {
+							if(count($genIds) > 0) {
+								$results[$key-1]['genIds'] = $genIds;
+							}
+							unset($results[$key-1]['genId']);
+							unset($results[$key-1]['entGenId']);
+							$data[] = $results[$key-1];
+						}
+						$genIds = array();
+						if($result['genId']) {
+							$genIds[] = $result['genId'];
+						}
 					}
+					$lastId = $thisId;
+					$count++;
 				}
-				$lastId = $thisId;
-				$count++;
+				if(count($genIds) > 0) {
+					$results[$key]['genIds'] = $genIds;
+				}
+				unset($results[$key]['genId']);
+				unset($results[$key]['entGenId']);
+				$data[] = $results[$key];
+				return $data;
+			} else {
+				return $results;
 			}
-			if(count($genIds) > 0) {
-				$results[$key]['genIds'] = $genIds;
-			}
-			unset($results[$key]['genId']);
-			unset($results[$key]['entGenId']);
-			$data[] = $results[$key];
-			return $data;
 		}
 
 		public function getGenres($type) {
