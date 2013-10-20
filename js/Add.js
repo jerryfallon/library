@@ -388,7 +388,7 @@ Add.prototype.submitForm = function() {
 			});
 		} else {
 			db.addData(this.type, this.gatherData(), function(results) {
-				console.log(results);
+				//console.log(results);
 				$('#form-success').text('#' + results + ' added to ' + that.type + ' successfully').show();
 				that.resetForm();
 			});

@@ -62,7 +62,7 @@
 				$select = 'x.movId, x.title, x.alphabeticaltitle, x.location, x.seen, x.rating, x.discs, g.genId';
 				$from = 'movies x LEFT JOIN entry_genre eg ON x.movId = eg.movId LEFT JOIN genres g ON eg.genId = g.genId';
 			} elseif($table === 'games') {
-				$select = 'x.gamId, x.title, x.alphabeticaltitle, x.location, x.beaten, x.rating, x.discs, g.genId, s.systemname';
+				$select = 'x.gamId, x.title, x.alphabeticaltitle, x.location, x.beaten, x.rating, x.discs, g.genId, s.sysId, s.systemname';
 				$from = 'games x LEFT JOIN entry_genre eg ON x.gamId = eg.gamId LEFT JOIN genres g ON eg.genId = g.genId LEFT JOIN systems s ON x.sysId = s.sysId';
 			}
 		

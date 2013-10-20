@@ -3,14 +3,14 @@ function Db() {
 }
 
 Db.prototype.addData = function(table, vals, cb) {
-	console.log('add to table ' + table + 's');
-	console.log(JSON.stringify(vals));
+	//console.log('add to table ' + table);
+	//console.log(JSON.stringify(vals));
 	var data = {
 		command: 'addData',
 		table: table,
 		data: JSON.stringify(vals)
 	};
-	console.log(data);
+	//console.log(data);
 	$.post(this.apiUrl, data, function(results) {
 		if(typeof cb === 'function') {
 			cb(results);
@@ -63,7 +63,7 @@ Db.prototype.login = function(user, pass) {
 
 Db.prototype.loginSuccess = function(usrId) {
 	$.cookie('usrId', usrId, { expires: 31 });
-	$('.nav-button[data-section="movies"]').click();
+	//$('.nav-button[data-section="movies"]').click();
 	$('.nav-button[data-section="login"]').hide();
 	list.setupEditFunctionality();
 };
