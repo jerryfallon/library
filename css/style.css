@@ -180,3 +180,11 @@ tr.hover {
 .search-result:hover {
 	background-color: lightblue;
 }
+
+#login-failure {
+	font-weight: bold;
+	color: red;
+	font-size: 24px;
+	font-style: italic;
+	display: none;
+}

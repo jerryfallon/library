@@ -97,7 +97,7 @@ List.prototype.displayMatches = function(results) {
 	} else {
 		$('#no-results').show();
 	}
-	//$('#results-count').text(results.length + ' results');
+	$('#results-count').text(results.length + ' results');
 	this.toggleFields();
 };
 

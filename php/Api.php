@@ -173,7 +173,7 @@
 			$where = 'username = "' . mysql_real_escape_string($user) . '"';
 			$where .= ' AND password = "' . mysql_real_escape_string($pass) . '"';
 			$order = null;
-			return $this->selectDistinct($from, $where, $order);
+			return $this->selectDistinct($from, $where, $order, null);
 		}
 
 		private function selectDistinct($from, $where, $order, $select) {

@@ -1,5 +1,7 @@
 function Db() {
 	this.apiUrl = 'php/api.php';
+
+	this.xhr;
 }
 
 Db.prototype.addData = function(table, vals, cb) {
@@ -20,7 +22,7 @@ Db.prototype.addData = function(table, vals, cb) {
 
 Db.prototype.checkLogin = function() {
 	if($.cookie('usrId')) {
-		this.loginSuccess($.cookie('usrId'));
+		this.loginSuccess($.cookie('usrId'), true);
 	}
 };
 
@@ -48,6 +50,7 @@ Db.prototype.getSystems = function(cb) {
 };
 
 Db.prototype.login = function(user, pass) {
+	$('#login-failure').hide();
 	var that = this;
 	var data = {
 		command: 'login',
@@ -57,15 +60,24 @@ Db.prototype.login = function(user, pass) {
 	$.post(this.apiUrl, data, function(results) {
 		if(results.length) {
 			that.loginSuccess(results[0].usrId);
+		} else {
+			that.loginFailure();
 		}
 	}, 'json');
 };
 
-Db.prototype.loginSuccess = function(usrId) {
+Db.prototype.loginFailure = function() {
+	$('#login-failure').show();
+};
+
+Db.prototype.loginSuccess = function(usrId, noRedirect) {
 	$.cookie('usrId', usrId, { expires: 31 });
-	//$('.nav-button[data-section="movies"]').click();
 	$('.nav-button[data-section="login"]').hide();
 	list.setupEditFunctionality();
+
+	if(!noRedirect) {
+		$('.nav-button[data-section="movies"]').click();
+	}
 };
 
 Db.prototype.select = function(table, filters, sort, cb) {
@@ -85,8 +97,8 @@ Db.prototype.select = function(table, filters, sort, cb) {
 		filters: filters,
 		sort: sort
 	};
-	//console.log(JSON.stringify(data));
-	$.post(this.apiUrl, data, function(results) {
+	if(this.xhr) { this.xhr.abort(); }
+	this.xhr = $.post(this.apiUrl, data, function(results) {
 		if(typeof cb === 'function') {
 			cb(results);
 		}
