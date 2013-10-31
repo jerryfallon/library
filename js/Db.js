@@ -97,6 +97,7 @@ Db.prototype.select = function(table, filters, sort, cb) {
 		filters: filters,
 		sort: sort
 	};
+	console.log(data);
 	if(this.xhr) { this.xhr.abort(); }
 	this.xhr = $.post(this.apiUrl, data, function(results) {
 		if(typeof cb === 'function') {

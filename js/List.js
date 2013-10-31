@@ -52,6 +52,20 @@ List.prototype.initHandlers = function() {
 		var pass = $('#password').val();
 		db.login(user, pass);
 	});
+
+	$('.sort').click( function() {
+		var col = $(this).data('column');
+		if(col === 'rating') {
+			var sort = 'DESC';
+		} else {
+			var sort = 'ASC';
+		}
+		var data = [{
+			column: col,
+			order: sort
+		}];
+		that.updateList(data);
+	});
 };
 
 List.prototype.displayMatches = function(results) {
@@ -199,7 +213,7 @@ List.prototype.toggleFields = function() {
 	}
 };
 
-List.prototype.updateList = function() {
+List.prototype.updateList = function(sort) {
 
 	var that = this;
 
@@ -243,7 +257,7 @@ List.prototype.updateList = function() {
 		}
 	}
 
-	var sort = [];
+	var sort = sort || [];
 	sort.push({ column: 'alphabeticaltitle', order: 'ASC' });
 
 	db.select(this.type, JSON.stringify(filters), JSON.stringify(sort), function(results) {

@@ -209,3 +209,14 @@ tr.hover {
 	font-style: italic;
 	display: none;
 }
+
+.sort {
+	background-repeat: no-repeat;
+	padding-left: 15px;
+	cursor: pointer;
+	background-position: 1px 1px;
+}
+
+.down {
+	background-image: url("../img/downarrow.png");
+}
