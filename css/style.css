@@ -77,15 +77,31 @@ tr.hover {
 	display: none;
 }
 
+#nav {
+	margin-bottom: 10px;
+	border-bottom: 1px solid black;
+	overflow: hidden;
+}
+
 .nav-button {
 	font-size: 24px;
 	display: inline-block;
-	padding: 8px;
+	padding: 6px;
 	cursor: pointer;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+	border-left: 1px solid black;
+	border-top: 1px solid black;
+	border-right: 1px solid black;
+	margin-right: 10px;
+	box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.7);
+	transition: all .1s ease;
+	background-color: #999999;
 }
 
 .selected {
-	background-color: #cccccc;
+	background-color: #eeeeee;
+	box-shadow: 8px 3px 8px rgba(0, 0, 0, 0.7);
 }
 
 #games, #login, #add {
@@ -104,10 +120,19 @@ tr.hover {
 	display: inline-block;
 	font-size: 24px;
 	background-color: #9bc8cb;
-	border: 2px solid black;
-	margin: 25px;
-	padding: 10px;
+	border: 1px solid black;
+	margin: 25px 10px 25px 25px;
+	padding: 8px;
 	cursor: pointer;
+	box-shadow: 0px 9px 25px rgba(0,0,0,.7);
+	transition: all .1s ease;
+}
+
+.form-type-button.toggled {
+	box-shadow: 0px 3px 6px rgba(0,0,0,.9);
+    position: relative;
+    top: 6px;
+	background-color: teal;
 }
 
 .form-field-title-cell {
@@ -167,10 +192,6 @@ tr.hover {
 
 .clearfix {
 	clear: both;
-}
-
-.toggled {
-	background-color: teal;
 }
 
 .search-result {
