@@ -39,6 +39,7 @@ body {
 	font-weight: bold;
 	font-size: 20px;
 	padding: 50px;
+	text-align: center;
 }
 
 #no-results {
@@ -219,4 +220,13 @@ tr.hover {
 
 .down {
 	background-image: url("../img/downarrow.png");
+}
+
+.mobile-only {
+	display: none;
+}
+
+#results {
+	max-height: 800px;
+	overflow-y: auto;
 }

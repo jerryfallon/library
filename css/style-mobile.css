@@ -1,0 +1,58 @@
+/* Hidden completely */
+.nav-button[data-section="add"], .nav-button[data-section="login"],
+#genre-header, .genre-cell, #location-header, .location-cell {
+	display: none !important;
+}
+
+
+
+/* Now shown */
+.mobile-only {
+	display: block;
+}
+
+
+
+/* Adjusted widths, paddings and margins */
+body {
+	margin: 0;
+	padding: 0;
+}
+
+#container {
+	min-width: 0;
+	padding: 1px;
+	border: none;
+}
+
+#results-table {
+	padding: 1px;
+}
+
+.rating-cell {
+	padding: 0;
+}
+
+.title-cell {
+	padding-left: 3px;
+	overflow: hidden;
+	white-space: nowrap;
+	max-width: 100px;
+	text-overflow: ellipsis;
+}
+
+#nav {
+	margin-bottom: 3px;
+}
+
+#results {
+	max-height: 400px;
+}
+
+#seen-header, #beaten-header {
+	width: 40px;
+}
+
+#games-title {
+	width: 100px;
+}

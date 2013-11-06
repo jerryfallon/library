@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
+		<link rel="stylesheet" type="text/css" media="handheld, (max-width: 540px), (max-device-width: 540px)" href="css/style-mobile.css" />
 
 		<script type="text/javascript" src="js/libraries/jquery-2.0.3.min.js"></script>
 		<script type="text/javascript" src="js/libraries/handlebars.js"></script>
@@ -23,17 +26,17 @@
 				<span class="nav-button" data-section="add" style="display: none;">Add</span>
 			</div>
 			<div id="movies" class="section">
-				<input type="checkbox" class="list-form" id="movies-checked-out" /> Checked Out Only
-				<input type="checkbox" class="list-form" id="movies-unseen" /> Unseen Only<br/>
+				Checked Out Only <input type="checkbox" class="list-form" id="movies-checked-out" />
+				Unseen Only <input type="checkbox" class="list-form" id="movies-unseen" /><br/>
 				Rating <select class="list-form" id="movies-rating"></select>
-				Title <input type="text" class="list-form" id="movies-title" />
+				Title <input type="text" class="list-form" id="movies-title" /><br class="mobile-only" />
 				Genre <select class="list-form" id="movies-genre"></select><br/>
 			</div>
 			<div id="games" class="section">
-				<input type="checkbox" class="list-form" id="games-checked-out" /> Checked Out Only
-				<select class="list-form" id="games-beaten"></select> Status
-				<select class="list-form" id="games-genre"></select> Genre<br/>
-				Rating <select class="list-form" id="games-rating"></select>
+				Checked Out Only <input type="checkbox" class="list-form" id="games-checked-out" />
+				Status <select class="list-form" id="games-beaten"></select><br class="mobile-only" />
+				Genre <select class="list-form" id="games-genre"></select>
+				Rating <select class="list-form" id="games-rating"></select><br/>
 				Title <input type="text" class="list-form" id="games-title" />
 				System <select class="list-form" id="games-system"></select>
 			</div>
@@ -61,11 +64,11 @@
 					<tr>
 						<th><span class="sort down" data-column="rating">Rating</span></th>
 						<th><span class="sort down" data-column="alphabeticaltitle">Title</span></th>
-						<th>Location</th>
-						<th class="movies-field">Seen</th>
-						<th class="games-field">Beaten</th>
+						<th id="location-header">Location</th>
+						<th id="seen-header" class="movies-field">Seen</th>
+						<th id="beaten-header" class="games-field">Beaten</th>
 						<th class="games-field"><span class="sort down" data-column="sysId">System</span></th>
-						<th colspan="3">Genres</th>
+						<th id="genre-header" colspan="3">Genres</th>
 					</tr>
 					<tr>
 						<td id="loading-note" colspan="7">Loading, calm yourself...</td>
