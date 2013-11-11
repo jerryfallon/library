@@ -360,10 +360,11 @@ Add.prototype.search = function(val, col, cb) {
 	var filters = JSON.stringify([{column:(col?col:'title'), value: val}]);
 	var sort = JSON.stringify([{column:'alphabeticaltitle', order: 'ASC'}]);
 	var colId = this.getIdType();
+	var limit = JSON.stringify({start:0,stop:50});
 	var that = this;
 	var source = $('#template-search-result').html();
 	var template = Handlebars.compile(source);
-	db.select(table, filters, sort, function(results) {
+	db.select(table, filters, sort, limit, function(results) {
 		that.searchResults = results;
 		var html = '';
 		var row, context;

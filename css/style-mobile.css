@@ -45,10 +45,6 @@ body {
 	margin-bottom: 3px;
 }
 
-#results {
-	max-height: 400px;
-}
-
 #seen-header, #beaten-header {
 	width: 40px;
 }

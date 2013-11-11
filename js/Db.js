@@ -80,7 +80,7 @@ Db.prototype.loginSuccess = function(usrId, noRedirect) {
 	}
 };
 
-Db.prototype.select = function(table, filters, sort, cb) {
+Db.prototype.select = function(table, filters, sort, limit, cb) {
 	// Fake overloading
 	if(typeof filters === 'function') {
 		cb = filters;
@@ -95,9 +95,10 @@ Db.prototype.select = function(table, filters, sort, cb) {
 		command: 'getData',
 		table: table,
 		filters: filters,
-		sort: sort
+		sort: sort,
+		limit: limit
 	};
-	console.log(data);
+	//console.log(data);
 	if(this.xhr) { this.xhr.abort(); }
 	this.xhr = $.post(this.apiUrl, data, function(results) {
 		if(typeof cb === 'function') {

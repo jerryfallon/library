@@ -57,7 +57,7 @@
 			return $this->delete($from, $where);
 		}
 
-		public function getData($table, $filters, $sort) {
+		public function getData($table, $filters, $sort, $limit) {
 			if($table === 'movies') {
 				$select = 'x.movId, x.title, x.alphabeticaltitle, x.location, x.seen, x.rating, x.discs, g.genId';
 				$from = 'movies x LEFT JOIN entry_genre eg ON x.movId = eg.movId LEFT JOIN genres g ON eg.genId = g.genId';
@@ -96,7 +96,14 @@
 			}
 			$order .= (strlen($order)>0 ? ', ' : '') . 'x.alphabeticaltitle ASC';
 
-			$results = $this->selectDistinct($from, $where, $order, $select);
+			// if(!empty($limit)) {
+			// 	if($limit = json_decode($limit)) {
+			// 		$limit = mysql_real_escape_string($limit->start) . ', 500';
+			// 	}
+			// }
+			$limit = null;
+
+			$results = $this->selectDistinct($from, $where, $order, $select, $limit);
 			//print_r($results);
 			
 			if(count($results)) {
@@ -105,6 +112,9 @@
 				$data = array();
 				$count = 0;
 				foreach($results as $key => $result) {
+					// if(count($data) > 98) {
+					// 	break;
+					// }
 					$thisId = $result[($table === 'movies' ? 'movId' : 'gamId')];
 					if($thisId === $lastId) {
 						$genIds[] = $result['genId'];
@@ -142,14 +152,14 @@
 			$from = 'genres';
 			$where = 'type = "' . mysql_real_escape_string($type) . '"';
 			$order = 'genrename ASC';
-			return $this->selectDistinct($from, $where, $order, '');
+			return $this->selectDistinct($from, $where, $order, null, null);
 		}
 
 		public function getSystems() {
 			$from = 'systems';
 			$where = null;
 			$order = 'systemname ASC';
-			return $this->selectDistinct($from, $where, $order, '');
+			return $this->selectDistinct($from, $where, $order, null, null);
 		}
 
 		public function insert($table, $data) {
@@ -173,10 +183,10 @@
 			$where = 'username = "' . mysql_real_escape_string($user) . '"';
 			$where .= ' AND password = "' . mysql_real_escape_string($pass) . '"';
 			$order = null;
-			return $this->selectDistinct($from, $where, $order, null);
+			return $this->selectDistinct($from, $where, $order, null, null);
 		}
 
-		private function selectDistinct($from, $where, $order, $select) {
+		private function selectDistinct($from, $where, $order, $select, $limit) {
 			$sql = 'SELECT DISTINCT ' . ($select ? $select : '*');
 			$sql .= ' FROM ' . $from;
 			if(!empty($where)) {
@@ -184,6 +194,9 @@
 			}
 			if(!empty($order)) {
 				$sql .= ' ORDER BY ' . $order;
+			}
+			if(!empty($limit)) {
+				$sql .= ' LIMIT ' . $limit;
 			}
 			return $this->db->executeSql($sql, 'select');
 		}
@@ -245,7 +258,7 @@
 	$api = new Api();
 	switch($data['command']) {
 		case 'getData':
-			$response = $api->getData($data['table'], $data['filters'], $data['sort']);
+			$response = $api->getData($data['table'], $data['filters'], $data['sort'], $data['limit']);
 			break;
 		case 'getGenres':
 			$response = $api->getGenres($data['type']);

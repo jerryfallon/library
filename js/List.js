@@ -1,5 +1,7 @@
 function List() {
 	this.type = 'movies';
+	this.sort = [];
+	this.groupsLoaded = 1;
 
 	this.initHandlers();
 }
@@ -64,13 +66,24 @@ List.prototype.initHandlers = function() {
 			column: col,
 			order: sort
 		}];
-		that.updateList(data);
+		that.sort = data;
+		that.updateList();
+	});
+
+	$('#results').scroll( function() {
+		var scrollTop = $(this).scrollTop();
+		var height = $(this).height();
+		if(scrollTop >= height) {
+			that.loadNextGroup();
+		}
 	});
 };
 
-List.prototype.displayMatches = function(results) {
+List.prototype.displayMatches = function(results, reset) {
 	//console.log(results);
-	$('.result-row').remove();
+	if(reset) {
+		$('.result-row').remove();
+	}
 	$('#loading-note').hide();
 	$('#no-results').hide();
 	var count = 0;
@@ -115,12 +128,69 @@ List.prototype.displayMatches = function(results) {
 	this.toggleFields();
 };
 
+List.prototype.getFilters = function() {
+	var filters = [];
+	if(this.type === 'movies') {
+		if($('#movies-checked-out').is(':checked')) {
+			filters.push({ column: 'location', condition: 'not', value: 'In Stock' });
+		}
+		if($('#movies-unseen').is(':checked')) {
+			filters.push({ column: 'seen', value: '0' });
+		}
+		if($('#movies-rating').val()) {
+			filters.push({ column: 'rating', value: $('#movies-rating').val() });
+		}
+		if($('#movies-title').val()) {
+			filters.push({ column: 'title', value: $('#movies-title').val() });
+		}
+		if($('#movies-genre').val()) {
+			filters.push({ column: 'g.genId', condition: 'equals', value: $('#movies-genre').val() });
+		}
+	} else if(this.type === 'games') {
+		if($('#games-checked-out').is(':checked')) {
+			filters.push({ column: 'location', condition: 'not', value: 'In Stock' });
+			filters.push({ column: 'location', condition: 'not', value: 'In Stock - HD' });
+		}
+		if($('#games-beaten').val()) {
+			filters.push({ column: 'beaten', value: $('#games-beaten').val() });
+		}
+		if($('#games-rating').val()) {
+			filters.push({ column: 'rating', value: $('#games-rating').val() });
+		}
+		if($('#games-title').val()) {
+			filters.push({ column: 'title', value: $('#games-title').val() });
+		}
+		if($('#games-system').val()) {
+			filters.push({ column: 's.sysId', condition: 'equals', value: $('#games-system').val() });
+		}
+		if($('#games-genre').val()) {
+			filters.push({ column: 'g.genId', condition: 'equals', value: $('#games-genre').val() });
+		}
+	}
+
+	return filters;
+}
+
 List.prototype.getIdType = function() {
 	if(this.type === 'movies') {
 		return 'movId';
 	} else if(this.type === 'games') {
 		return 'gamId';
 	}
+};
+
+List.prototype.loadNextGroup = function() {
+	var that = this;
+	var filters = this.getFilters();
+	var sort = sort || [];
+	sort.push({ column: 'alphabeticaltitle', order: 'ASC' });
+
+	var limit = { start: this.groupsLoaded * 100 };
+
+	db.select(this.type, JSON.stringify(filters), JSON.stringify(sort), JSON.stringify(limit), function(results) {
+		that.displayMatches(results);
+		that.groupsLoaded++;
+	});
 };
 
 List.prototype.populateDropDown = function(node, data) {
@@ -213,54 +283,16 @@ List.prototype.toggleFields = function() {
 	}
 };
 
-List.prototype.updateList = function(sort) {
-
+List.prototype.updateList = function() {
 	var that = this;
-
-
-	var filters = [];
-	if(this.type === 'movies') {
-		if($('#movies-checked-out').is(':checked')) {
-			filters.push({ column: 'location', condition: 'not', value: 'In Stock' });
-		}
-		if($('#movies-unseen').is(':checked')) {
-			filters.push({ column: 'seen', value: '0' });
-		}
-		if($('#movies-rating').val()) {
-			filters.push({ column: 'rating', value: $('#movies-rating').val() });
-		}
-		if($('#movies-title').val()) {
-			filters.push({ column: 'title', value: $('#movies-title').val() });
-		}
-		if($('#movies-genre').val()) {
-			filters.push({ column: 'g.genId', condition: 'equals', value: $('#movies-genre').val() });
-		}
-	} else if(this.type === 'games') {
-		if($('#games-checked-out').is(':checked')) {
-			filters.push({ column: 'location', condition: 'not', value: 'In Stock' });
-			filters.push({ column: 'location', condition: 'not', value: 'In Stock - HD' });
-		}
-		if($('#games-beaten').val()) {
-			filters.push({ column: 'beaten', value: $('#games-beaten').val() });
-		}
-		if($('#games-rating').val()) {
-			filters.push({ column: 'rating', value: $('#games-rating').val() });
-		}
-		if($('#games-title').val()) {
-			filters.push({ column: 'title', value: $('#games-title').val() });
-		}
-		if($('#games-system').val()) {
-			filters.push({ column: 's.sysId', condition: 'equals', value: $('#games-system').val() });
-		}
-		if($('#games-genre').val()) {
-			filters.push({ column: 'g.genId', condition: 'equals', value: $('#games-genre').val() });
-		}
-	}
-
-	var sort = sort || [];
+	var filters = this.getFilters();
+	var sort = this.sort || [];
 	sort.push({ column: 'alphabeticaltitle', order: 'ASC' });
 
-	db.select(this.type, JSON.stringify(filters), JSON.stringify(sort), function(results) {
-		that.displayMatches(results);
+	var limit = { start: 0 };
+
+	db.select(this.type, JSON.stringify(filters), JSON.stringify(sort), JSON.stringify(limit), function(results) {
+		that.displayMatches(results, true);
+		that.groupsLoaded = 1;
 	});
 };
