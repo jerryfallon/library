@@ -70,13 +70,13 @@ List.prototype.initHandlers = function() {
 		that.updateList();
 	});
 
-	$('#results').scroll( function() {
-		var scrollTop = $(this).scrollTop();
-		var height = $(this).height();
-		if(scrollTop >= height) {
-			that.loadNextGroup();
-		}
-	});
+	// $('#results').scroll( function() {
+	// 	var scrollTop = $(this).scrollTop();
+	// 	var height = $(this).height();
+	// 	if(scrollTop >= height) {
+	// 		that.loadNextGroup();
+	// 	}
+	// });
 };
 
 List.prototype.displayMatches = function(results, reset) {
