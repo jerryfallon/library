@@ -97,6 +97,7 @@ List.prototype.displayMatches = function(results, reset) {
 
 		var result;
 		var lastId = 0;
+		var genIds;
 
 		for(var i in results) {
 			result = results[i];
@@ -110,8 +111,11 @@ List.prototype.displayMatches = function(results, reset) {
 				beaten: result.beaten,
 				genIds: []
 			}
-			for(var j in result.genIds) {
-				context.genIds.push({ id: result.genIds[j] });
+			if(result.genIds) {
+				genIds = result.genIds.split(',');
+				for(var j in genIds) {
+					context.genIds.push({ id: genIds[j] });
+				}
 			}
 			//console.log(context);
 			html += template(context);

@@ -283,12 +283,12 @@ Add.prototype.getSystems = function(cb) {
 };
 
 Add.prototype.populateForm = function(id) {
-	var row, field, selector, val;
+	var row, field, selector, val, genIds;
 	var idCol = this.getIdType();
 	for(var i in this.searchResults) {
 		row = this.searchResults[i];
 		if(id == row[idCol]) {
-			//console.log(row);
+			// console.log(row);
 			for(var j in this.schema[this.type]) {
 				field = this.schema[this.type][j];
 				selector = '#'+this.type+'-'+field.field+'-field';
@@ -308,9 +308,12 @@ Add.prototype.populateForm = function(id) {
 					}
 				} else if(field.type === 'multiple') {
 					if(field.field === 'genre') {
-						for(var k in row.genIds) {
-							selector = '#'+this.type+'-'+field.field+'-'+row.genIds[k];
-							$(selector).prop('checked', true);
+						if(row.genIds) {
+							genIds = row.genIds.split(',');
+							for(var k in genIds) {
+								selector = '#'+this.type+'-'+field.field+'-'+genIds[k];
+								$(selector).prop('checked', true);
+							}
 						}
 					}
 				}

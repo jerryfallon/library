@@ -59,11 +59,13 @@
 
 		public function getData($table, $filters, $sort, $limit) {
 			if($table === 'movies') {
-				$select = 'x.movId, x.title, x.alphabeticaltitle, x.location, x.seen, x.rating, x.discs, g.genId';
+				$select = 'x.movId, x.title, x.alphabeticaltitle, x.location, x.seen, x.rating, x.discs, GROUP_CONCAT(g.genId ORDER BY g.genrename) genIds';
 				$from = 'movies x LEFT JOIN entry_genre eg ON x.movId = eg.movId LEFT JOIN genres g ON eg.genId = g.genId';
+				$group = 'x.movId';
 			} elseif($table === 'games') {
-				$select = 'x.gamId, x.title, x.alphabeticaltitle, x.location, x.beaten, x.rating, x.discs, g.genId, s.sysId, s.systemname';
+				$select = 'x.gamId, x.title, x.alphabeticaltitle, x.location, x.beaten, x.rating, x.discs, GROUP_CONCAT(g.genId ORDER BY genrename) genIds, s.sysId, s.systemname';
 				$from = 'games x LEFT JOIN entry_genre eg ON x.gamId = eg.gamId LEFT JOIN genres g ON eg.genId = g.genId LEFT JOIN systems s ON x.sysId = s.sysId';
+				$group = 'x.gamId';
 			}
 		
 			$where = '';
@@ -103,63 +105,62 @@
 			// }
 			$limit = null;
 
-			$results = $this->selectDistinct($from, $where, $order, $select, $limit);
-			//print_r($results);
+			return $this->selectDistinct($select, $from, $where, $group, $order, $limit);
+			// //print_r($results);
 			
-			if(count($results)) {
-				$lastId = 0;
-				$genIds = array();
-				$data = array();
-				$count = 0;
-				foreach($results as $key => $result) {
-					// if(count($data) > 98) {
-					// 	break;
-					// }
-					$thisId = $result[($table === 'movies' ? 'movId' : 'gamId')];
-					if($thisId === $lastId) {
-						$genIds[] = $result['genId'];
-						//print_r($genIds);
-					} else {
-						if($count > 0) {
-							if(count($genIds) > 0) {
-								$results[$key-1]['genIds'] = $genIds;
-							}
-							unset($results[$key-1]['genId']);
-							unset($results[$key-1]['entGenId']);
-							$data[] = $results[$key-1];
-						}
-						$genIds = array();
-						if($result['genId']) {
-							$genIds[] = $result['genId'];
-						}
-					}
-					$lastId = $thisId;
-					$count++;
-				}
-				if(count($genIds) > 0) {
-					$results[$key]['genIds'] = $genIds;
-				}
-				unset($results[$key]['genId']);
-				unset($results[$key]['entGenId']);
-				$data[] = $results[$key];
-				return $data;
-			} else {
-				return $results;
-			}
+			// if(count($results)) {
+			// 	$lastId = 0;
+			// 	$genIds = array();
+			// 	$data = array();
+			// 	$count = 0;
+			// 	foreach($results as $key => $result) {
+			// 		// if(count($data) > 98) {
+			// 		// 	break;
+			// 		// }
+			// 		$thisId = $result[($table === 'movies' ? 'movId' : 'gamId')];
+			// 		if($thisId === $lastId) {
+			// 			$genIds[] = $result['genId'];
+			// 			//print_r($genIds);
+			// 		} else {
+			// 			if($count > 0) {
+			// 				if(count($genIds) > 0) {
+			// 					$results[$key-1]['genIds'] = $genIds;
+			// 				}
+			// 				unset($results[$key-1]['genId']);
+			// 				unset($results[$key-1]['entGenId']);
+			// 				$data[] = $results[$key-1];
+			// 			}
+			// 			$genIds = array();
+			// 			if($result['genId']) {
+			// 				$genIds[] = $result['genId'];
+			// 			}
+			// 		}
+			// 		$lastId = $thisId;
+			// 		$count++;
+			// 	}
+			// 	if(count($genIds) > 0) {
+			// 		$results[$key]['genIds'] = $genIds;
+			// 	}
+			// 	unset($results[$key]['genId']);
+			// 	unset($results[$key]['entGenId']);
+			// 	$data[] = $results[$key];
+			// 	return $data;
+			// } else {
+			// 	return $results;
+			// }
 		}
 
 		public function getGenres($type) {
 			$from = 'genres';
 			$where = 'type = "' . mysql_real_escape_string($type) . '"';
 			$order = 'genrename ASC';
-			return $this->selectDistinct($from, $where, $order, null, null);
+			return $this->selectDistinct(null, $from, $where, null, $order, null);
 		}
 
 		public function getSystems() {
 			$from = 'systems';
-			$where = null;
 			$order = 'systemname ASC';
-			return $this->selectDistinct($from, $where, $order, null, null);
+			return $this->selectDistinct(null, $from, null, null, $order, null);
 		}
 
 		public function insert($table, $data) {
@@ -183,14 +184,17 @@
 			$where = 'username = "' . mysql_real_escape_string($user) . '"';
 			$where .= ' AND password = "' . mysql_real_escape_string($pass) . '"';
 			$order = null;
-			return $this->selectDistinct($from, $where, $order, null, null);
+			return $this->selectDistinct(null, $from, $where, null, $order, null);
 		}
 
-		private function selectDistinct($from, $where, $order, $select, $limit) {
+		private function selectDistinct($select, $from, $where, $group, $order, $limit) {
 			$sql = 'SELECT DISTINCT ' . ($select ? $select : '*');
 			$sql .= ' FROM ' . $from;
 			if(!empty($where)) {
 				$sql .= ' WHERE ' . $where;
+			}
+			if(!empty($group)) {
+				$sql .= ' GROUP BY ' . $group;
 			}
 			if(!empty($order)) {
 				$sql .= ' ORDER BY ' . $order;
