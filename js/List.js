@@ -57,10 +57,11 @@ List.prototype.initHandlers = function() {
 
 	$('.sort').click( function() {
 		var col = $(this).data('column');
+		var sort;
 		if(col === 'rating') {
-			var sort = 'DESC';
+			sort = 'DESC';
 		} else {
-			var sort = 'ASC';
+			sort = 'ASC';
 		}
 		var data = [{
 			column: col,
@@ -70,13 +71,15 @@ List.prototype.initHandlers = function() {
 		that.updateList();
 	});
 
-	// $('#results').scroll( function() {
-	// 	var scrollTop = $(this).scrollTop();
-	// 	var height = $(this).height();
-	// 	if(scrollTop >= height) {
-	// 		that.loadNextGroup();
-	// 	}
-	// });
+	/*
+	$('#results').scroll( function() {
+		var scrollTop = $(this).scrollTop();
+		var height = $(this).height();
+		if(scrollTop >= height) {
+			that.loadNextGroup();
+		}
+	});
+	*/
 };
 
 List.prototype.displayMatches = function(results, reset) {
@@ -110,7 +113,7 @@ List.prototype.displayMatches = function(results, reset) {
 				seen: result.seen,
 				beaten: result.beaten,
 				genIds: []
-			}
+			};
 			if(result.genIds) {
 				genIds = result.genIds.split(',');
 				for(var j in genIds) {
@@ -173,7 +176,7 @@ List.prototype.getFilters = function() {
 	}
 
 	return filters;
-}
+};
 
 List.prototype.getIdType = function() {
 	if(this.type === 'movies') {
@@ -213,7 +216,7 @@ List.prototype.populateDropDowns = function() {
 	var that = this;
 
 	// Ratings
-	var data = [{ value: "", text: "All" }]
+	var data = [{ value: "", text: "All" }];
 	for(var i = 10; i > 0; i--) {
 		data.push({ value: i, text: i });
 	}
