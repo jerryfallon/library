@@ -1,5 +1,5 @@
 function Add() {
-	this.type;
+	this.type = undefined;
 	this.initHandlers();
 
 	this.schema = {
@@ -222,7 +222,7 @@ Add.prototype.editEntry = function(type, id) {
 
 Add.prototype.gatherData = function() {
 	var data = [];
-	var field, num;
+	var field, num, col, val, genre;
 	for(var i in this.schema[this.type]) {
 		field = this.schema[this.type][i];
 		if(field.type !== 'submit') {
@@ -283,7 +283,7 @@ Add.prototype.getSystems = function(cb) {
 };
 
 Add.prototype.populateForm = function(id) {
-	var row, field, selector, val, genIds;
+	var row, field, selector, val, genIds, col;
 	var idCol = this.getIdType();
 	for(var i in this.searchResults) {
 		row = this.searchResults[i];
@@ -324,7 +324,7 @@ Add.prototype.populateForm = function(id) {
 };
 
 Add.prototype.replaceAll = function(find, replace, str) {
-  return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
+  return str.replace(new RegExp(find.replace(/[\/\\\^$*+?.()\-|\[\]{}]/g, '\\$&'), 'g'), replace);
 };
 
 Add.prototype.replaceStart = function(find, replace, str) {
@@ -333,7 +333,7 @@ Add.prototype.replaceStart = function(find, replace, str) {
 
 Add.prototype.resetForm = function() {
 	$('#entry-id').val('');
-	var field, selector;
+	var field, selector, genre;
 	for(var i in this.schema) {
 		for(var j in this.schema[i]) {
 			field = this.schema[i][j];
@@ -377,7 +377,7 @@ Add.prototype.search = function(val, col, cb) {
 			context = {
 				id: row[colId],
 				title: row.title
-			}
+			};
 			html += template(context);
 		}
 		$('#search-results').html(html);
