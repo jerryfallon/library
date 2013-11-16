@@ -1,7 +1,9 @@
+/* global CryptoJS, list: true */
+
 function Db() {
 	this.apiUrl = 'php/api.php';
 
-	this.xhr;
+	this.xhr = undefined;
 }
 
 Db.prototype.addData = function(table, vals, cb) {
