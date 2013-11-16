@@ -57,6 +57,15 @@
 			return $this->delete($from, $where);
 		}
 
+		public function getCounts($table) {
+			$select = 'rating x, count(*) y';
+			$from = mysql_real_escape_string($table);
+			$where = 'rating > 0';
+			$group = 'rating';
+			$order = 'rating ASC';
+			return $this->selectDistinct($select, $from, $where, $group, $order, null);
+		}
+
 		public function getData($table, $filters, $sort, $limit) {
 			if($table === 'movies') {
 				$select = 'x.movId, x.title, x.alphabeticaltitle, x.location, x.seen, x.rating, x.discs, GROUP_CONCAT(g.genId ORDER BY g.genrename) genIds';
@@ -106,48 +115,6 @@
 			$limit = null;
 
 			return $this->selectDistinct($select, $from, $where, $group, $order, $limit);
-			// //print_r($results);
-			
-			// if(count($results)) {
-			// 	$lastId = 0;
-			// 	$genIds = array();
-			// 	$data = array();
-			// 	$count = 0;
-			// 	foreach($results as $key => $result) {
-			// 		// if(count($data) > 98) {
-			// 		// 	break;
-			// 		// }
-			// 		$thisId = $result[($table === 'movies' ? 'movId' : 'gamId')];
-			// 		if($thisId === $lastId) {
-			// 			$genIds[] = $result['genId'];
-			// 			//print_r($genIds);
-			// 		} else {
-			// 			if($count > 0) {
-			// 				if(count($genIds) > 0) {
-			// 					$results[$key-1]['genIds'] = $genIds;
-			// 				}
-			// 				unset($results[$key-1]['genId']);
-			// 				unset($results[$key-1]['entGenId']);
-			// 				$data[] = $results[$key-1];
-			// 			}
-			// 			$genIds = array();
-			// 			if($result['genId']) {
-			// 				$genIds[] = $result['genId'];
-			// 			}
-			// 		}
-			// 		$lastId = $thisId;
-			// 		$count++;
-			// 	}
-			// 	if(count($genIds) > 0) {
-			// 		$results[$key]['genIds'] = $genIds;
-			// 	}
-			// 	unset($results[$key]['genId']);
-			// 	unset($results[$key]['entGenId']);
-			// 	$data[] = $results[$key];
-			// 	return $data;
-			// } else {
-			// 	return $results;
-			// }
 		}
 
 		public function getGenres($type) {
@@ -261,6 +228,9 @@
 	$data = $_POST;
 	$api = new Api();
 	switch($data['command']) {
+		case 'getCounts':
+			$response = $api->getCounts($data['table']);
+			break;
 		case 'getData':
 			$response = $api->getData($data['table'], $data['filters'], $data['sort'], $data['limit']);
 			break;

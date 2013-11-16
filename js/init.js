@@ -2,9 +2,11 @@ $(document).ready( function() {
 	db = new Db();
 	list = new List();
 	add = new Add();
+	chart = new Chart();
 	db.checkLogin();
 	list.init();
 	add.init();
+	chart.init();
 
 
 

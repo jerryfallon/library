@@ -10,10 +10,13 @@
 		<script type="text/javascript" src="js/libraries/handlebars.js"></script>
 		<script type="text/javascript" src="js/libraries/sha3.js"></script>
 		<script type="text/javascript" src="js/libraries/jquery.cookie.js"></script>
+		<script type="text/javascript" src="js/libraries/kinetic-v4.7.4.min.js"></script>
+		<script type="text/javascript" src="js/libraries/meteorcharts-v0.0.11.min.js"></script>
 
 		<script type="text/javascript" src="js/Db.js"></script>
 		<script type="text/javascript" src="js/List.js"></script>
 		<script type="text/javascript" src="js/Add.js"></script>
+		<script type="text/javascript" src="js/Chart.js"></script>
 		<script type="text/javascript" src="js/init.js"></script>
 	</head>
 	<body>
@@ -22,6 +25,7 @@
 			<div id="nav">
 				<span class="nav-button selected" data-section="movies">Movies</span>
 				<span class="nav-button" data-section="games">Games</span>
+				<span class="nav-button" data-section="chart">Chart</span>
 				<span class="nav-button" data-section="login">Login</span>
 				<span class="nav-button" data-section="add" style="display: none;">Add</span>
 			</div>
@@ -77,6 +81,9 @@
 						<td id="no-results" colspan="7">No Matches</td>
 					</tr>
 				</table>
+			</div>
+			<div id="chart">
+				<div id="chartContainer"></div>
 			</div>
 		</div>
 	</body>

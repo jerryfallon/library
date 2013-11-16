@@ -26,6 +26,18 @@ Db.prototype.checkLogin = function() {
 	}
 };
 
+Db.prototype.getCounts = function(table, cb) {
+	var data = {
+		command: 'getCounts',
+		table: table
+	};
+	$.post(this.apiUrl, data, function(results) {
+		if(typeof cb === 'function') {
+			cb(results);
+		}
+	}, 'json');
+};
+
 Db.prototype.getGenres = function(type, cb) {
 	var data = {
 		command: 'getGenres',

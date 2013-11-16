@@ -8,7 +8,7 @@
 		}
 
 		public function executeSql($sql, $type) {
-			//echo($sql . '; ');
+			// echo($sql . '; ');
 			if($result = mysql_query($sql)) {
 				if($type === 'insert') {
 					return mysql_insert_id();

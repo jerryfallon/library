@@ -114,7 +114,7 @@ tr.hover {
 	box-shadow: 8px 3px 8px rgba(0, 0, 0, 0.7);
 }
 
-#games, #login, #add {
+#games, #login, #add, #chart {
 	display: none;
 }
 
@@ -242,4 +242,8 @@ tr.hover {
 	right: 5px;
 	bottom: 5px;
 	left: 5px;
+}
+
+#chart {
+	text-align: center;
 }
