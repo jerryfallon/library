@@ -1,5 +1,3 @@
-/*jslint CryptoJS, list: true*/
-
 function Db() {
 	this.apiUrl = 'php/api.php';
 
