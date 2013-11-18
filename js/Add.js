@@ -60,7 +60,10 @@ Add.prototype.initHandlers = function() {
 	});
 
 	$('.add-form').on('click', '.form-submit', function() {
-		that.submitForm();
+		if(!$(this).attr('disabled')) {
+			$(this).attr('disabled','true');
+			that.submitForm();
+		}
 	});
 
 	$('.add-form').on('keyup', '#movies-title-field, #games-title-field', function() {
@@ -356,6 +359,7 @@ Add.prototype.resetForm = function() {
 	}
 	$('#search-results').html('');
 	this.searchResults = [];
+	$('.form-submit').removeAttr('disabled');
 };
 
 Add.prototype.search = function(val, col, cb) {
@@ -395,6 +399,7 @@ Add.prototype.submitForm = function() {
 			var where = { column: this.getIdType(), value: $('#entry-id').val() };
 			db.updateData(this.type, this.gatherData(), where, function(results) {
 				$('.nav-button[data-section='+that.type+']').click();
+				that.resetForm();
 			});
 		} else {
 			db.addData(this.type, this.gatherData(), function(results) {
