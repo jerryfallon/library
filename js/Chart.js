@@ -13,7 +13,7 @@ Chart.prototype.drawData = function() {
 
 			// Model object
 			var model = {
-				title: 'Example Chart',
+				title: 'Entries By Rating',
 				series: [{
 					title: 'Movies',
 					points: movieCounts
