@@ -17,6 +17,7 @@
 						break;
 					}
 				}
+
 				$id = $this->insert($table, $data);
 
 				// Add links

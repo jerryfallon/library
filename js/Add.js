@@ -223,7 +223,7 @@ Add.prototype.editEntry = function(type, id) {
 	$('.form-type-button[data-type='+this.type+']').addClass('toggled');
 };
 
-Add.prototype.gatherData = function() {
+Add.prototype.gatherData = function(addDate) {
 	var data = [];
 	var field, num, col, val, genre;
 	for(var i in this.schema[this.type]) {
@@ -253,6 +253,14 @@ Add.prototype.gatherData = function() {
 		}
 	}
 	//console.log(JSON.stringify(data));
+
+	// Add date
+	if(addDate) {
+		var d = new Date();
+		var date = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+		//console.log(date);
+		data.push({column: 'date', value: date});
+	}
 	return data;
 };
 
@@ -402,7 +410,7 @@ Add.prototype.submitForm = function() {
 				that.resetForm();
 			});
 		} else {
-			db.addData(this.type, this.gatherData(), function(results) {
+			db.addData(this.type, this.gatherData(true), function(results) {
 				//console.log(results);
 				$('#form-success').text('#' + results + ' added to ' + that.type + ' successfully').show();
 				that.resetForm();
