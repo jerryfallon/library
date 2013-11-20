@@ -46,6 +46,13 @@
 			}
 		}
 
+		public function averageBeforeDate($date) {
+			$select = 'AVG(rating) rating';
+			$from = 'movies';
+			$where = 'date > "2004-01-01" and date < "' . $date . '" AND rating > 0';
+			return $this->selectDistinct($select, $from, $where, null, null, null);
+		}
+
 		private function delete($from, $where) {
 			$sql = 'DELETE FROM ' . $from;
 			$sql .= ' WHERE ' . $where;
@@ -229,6 +236,12 @@
 	$data = $_POST;
 	$api = new Api();
 	switch($data['command']) {
+		case 'addData':
+			$response = $api->addData($data['table'], $data['data']);
+			break;
+		case 'averageBeforeDate':
+			$response = $api->averageBeforeDate($data['date']);
+			break;
 		case 'getCounts':
 			$response = $api->getCounts($data['table']);
 			break;
@@ -243,9 +256,6 @@
 			break;
 		case 'login':
 			$response = $api->login($data['user'], $data['pass']);
-			break;
-		case 'addData':
-			$response = $api->addData($data['table'], $data['data']);
 			break;
 		case 'updateData':
 			$response = $api->updateData($data['table'], $data['where'], $data['data']);

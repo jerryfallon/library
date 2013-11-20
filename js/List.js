@@ -37,8 +37,6 @@ List.prototype.initHandlers = function() {
 			if(id === 'add') {
 				add.resetForm();
 				$('#form-success').html('');
-			} else if(id === 'chart') {
-				chart.drawData();
 			}
 		}
 	});

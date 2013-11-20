@@ -20,6 +20,18 @@ Db.prototype.addData = function(table, vals, cb) {
 	});
 };
 
+Db.prototype.averageRatingByDate = function(date, cb) {
+	var data = {
+		command: 'averageBeforeDate',
+		date: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()
+	};
+	$.post(this.apiUrl, data, function(results) {
+		if(typeof cb === 'function') {
+			cb(results);
+		}
+	}, 'json');
+};
+
 Db.prototype.checkLogin = function() {
 	if($.cookie('usrId')) {
 		this.loginSuccess($.cookie('usrId'), true);
