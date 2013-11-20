@@ -49,7 +49,8 @@
 		public function averageBeforeDate($date) {
 			$select = 'AVG(rating) rating';
 			$from = 'movies';
-			$where = 'date > "2004-01-01" and date < "' . $date . '" AND rating > 0';
+			//$where = 'date > "2004-01-01" and date < "' . $date . '" AND rating > 0';
+			$where = 'date < "' . $date . '" AND rating > 0';
 			return $this->selectDistinct($select, $from, $where, null, null, null);
 		}
 

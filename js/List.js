@@ -89,7 +89,7 @@ List.prototype.displayMatches = function(results, reset) {
 	}
 	$('#loading-note').hide();
 	$('#no-results').hide();
-	var count = 0;
+	var count = 0, discs = 0;
 	if(results.length) {
 		var source = $('#template-result-row').html();
 		var template = Handlebars.compile(source);
@@ -122,6 +122,8 @@ List.prototype.displayMatches = function(results, reset) {
 			}
 			//console.log(context);
 			html += template(context);
+
+			discs += parseInt(result.discs);
 		}
 		$('#results-table').append(html);
 
@@ -131,7 +133,7 @@ List.prototype.displayMatches = function(results, reset) {
 	} else {
 		$('#no-results').show();
 	}
-	$('#results-count').text(results.length + ' results');
+	$('#results-count').text(results.length + ' results, ' + discs + ' discs');
 	this.toggleFields();
 };
 
