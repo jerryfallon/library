@@ -63,7 +63,7 @@ Chart.prototype.entriesByRating = function() {
 
 Chart.prototype.averageRatingByDate = function(date) {
 	if(!date) {
-		var date = new Date(2005, 1, 1);
+		date = new Date(2005, 1, 1);
 	} else {
 		if(date.getMonth() < 11) {
 			date.setMonth(date.getMonth()+1);

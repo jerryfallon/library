@@ -123,7 +123,7 @@ List.prototype.displayMatches = function(results, reset) {
 			//console.log(context);
 			html += template(context);
 
-			discs += parseInt(result.discs);
+			discs += parseInt(result.discs, 10);
 		}
 		$('#results-table').append(html);
 
