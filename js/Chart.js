@@ -2,22 +2,38 @@ function Chart() {
 	this.ratings = [];
 
 	this.initHandlers();
+
+	this.width = 0;
+	this.height = 0;
+	this.calculateDimensions();
 }
 
 Chart.prototype.init = function() {
 	this.entriesByRating();
-	// this.averageRatingByDate();
 };
 
 Chart.prototype.initHandlers = function() {
 	var that = this;
 	$('#chart-switch').change( function() {
 		if($(this).val() === 'entriesByRating') {
+			$('#dddContainer').hide();
+			$('#chartContainer').show();
 			that.entriesByRating();
 		} else if($(this).val() === 'averageRatingOverTime') {
+			$('#dddContainer').hide();
+			$('#chartContainer').show();
 			that.averageRatingByDate();
+		} else if($(this).val() === 'entriesByGenre') {
+			$('#chartContainer').hide();
+			$('#dddContainer').show();
+			ddd.init();
 		}
 	});
+};
+
+Chart.prototype.calculateDimensions = function() {
+	this.width = $('#container').width()-20;
+	this.height = this.width * (9/16);
 };
 
 Chart.prototype.entriesByRating = function() {
@@ -39,14 +55,10 @@ Chart.prototype.entriesByRating = function() {
 				}]
 			};
 
-			// Get height/width
-			var width = $('#container').width()-20;
-			var height = width * (9/16);
-
 			// View object
 			var view = {
-				width: width,
-				height: height,
+				width: this.width,
+				height: this.height,
 				xAxis: {
 					formatter: 'Number'
 				}
@@ -92,14 +104,10 @@ Chart.prototype.averageRatingByDate = function(date) {
 				}]
 			};
 
-			// Get height/width
-			var width = $('#container').width()-20;
-			var height = width * (9/16);
-
 			// View object
 			var view = {
-				width: width,
-				height: height,
+				width: this.width,
+				height: this.height,
 				xAxis: {
 					formatter: 'Date'
 				},

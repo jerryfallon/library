@@ -50,6 +50,18 @@ Db.prototype.getCounts = function(table, cb) {
 	}, 'json');
 };
 
+Db.prototype.getGenreCounts = function(table, cb) {
+	var data = {
+		command: 'getGenreCounts',
+		table: table
+	};
+	$.post(this.apiUrl, data, function(results) {
+		if(typeof cb === 'function') {
+			cb(results);
+		}
+	}, 'json');
+};
+
 Db.prototype.getGenres = function(type, cb) {
 	var data = {
 		command: 'getGenres',

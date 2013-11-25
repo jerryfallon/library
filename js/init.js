@@ -1,16 +1,20 @@
+function bind(f, obj) {
+	return function() {
+		f.apply(obj, arguments);
+	}
+}
+
+
 $(document).ready( function() {
 	db = new Db();
 	list = new List();
 	add = new Add();
 	chart = new Chart();
+	ddd = new Ddd();
 	db.checkLogin();
 	list.init();
 	add.init();
 	chart.init();
-
-
-
-
 
 
 
@@ -41,4 +45,14 @@ $(document).ready( function() {
 		}
 		return ret;
 	});
+
+	// Converts from degrees to radians.
+	Math.radians = function(degrees) {
+	  return degrees * Math.PI / 180;
+	};
+	 
+	// Converts from radians to degrees.
+	Math.degrees = function(radians) {
+	  return radians * 180 / Math.PI;
+	};
 });

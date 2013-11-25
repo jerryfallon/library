@@ -27,7 +27,6 @@ body {
 	padding: 5px;
 	border: 1px solid #333333;
 	max-width: 1000px;
-	min-width: 688px;
 	margin: 0 auto;
 	height: 100%;
 	box-sizing: border-box;
@@ -167,6 +166,10 @@ tr.hover {
 #movies-rating-field, #games-rating-field, #movies-discs-field, #games-discs-field {
 	width: 25px;
 	text-align: center;
+}
+
+#movies-year-field, #games-year-field {
+	width: 50px;
 }
 
 #games-system-field {

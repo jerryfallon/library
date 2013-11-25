@@ -77,11 +77,11 @@
 
 		public function getData($table, $filters, $sort, $limit) {
 			if($table === 'movies') {
-				$select = 'x.movId, x.title, x.alphabeticaltitle, x.location, x.seen, x.rating, x.discs, GROUP_CONCAT(g.genId ORDER BY g.genrename) genIds';
+				$select = 'x.movId, x.title, x.alphabeticaltitle, x.location, x.seen, x.rating, x.discs, x.year, GROUP_CONCAT(g.genId ORDER BY g.genrename) genIds';
 				$from = 'movies x LEFT JOIN entry_genre eg ON x.movId = eg.movId LEFT JOIN genres g ON eg.genId = g.genId';
 				$group = 'x.movId';
 			} elseif($table === 'games') {
-				$select = 'x.gamId, x.title, x.alphabeticaltitle, x.location, x.beaten, x.rating, x.discs, GROUP_CONCAT(g.genId ORDER BY genrename) genIds, s.sysId, s.systemname';
+				$select = 'x.gamId, x.title, x.alphabeticaltitle, x.location, x.beaten, x.rating, x.discs, x.year, GROUP_CONCAT(g.genId ORDER BY genrename) genIds, s.sysId, s.systemname';
 				$from = 'games x LEFT JOIN entry_genre eg ON x.gamId = eg.gamId LEFT JOIN genres g ON eg.genId = g.genId LEFT JOIN systems s ON x.sysId = s.sysId';
 				$group = 'x.gamId';
 			}
@@ -124,6 +124,18 @@
 			$limit = null;
 
 			return $this->selectDistinct($select, $from, $where, $group, $order, $limit);
+		}
+
+		public function getGenreCounts($table) {
+			$select = 'g.genrename title, COUNT(*) count';
+			$from = mysql_real_escape_string($table) . ' x, entry_genre eg, genres g';
+			if($table === 'movies') {
+				$where = 'x.movId = eg.movId AND eg.genId = g.genId';
+			} else {
+				$where = 'x.gamId = eg.gamId AND eg.genId = g.genId';
+			}
+			$group = 'g.genrename';
+			return $this->selectDistinct($select, $from, $where, $group, null, null);
 		}
 
 		public function getGenres($type) {
@@ -248,6 +260,9 @@
 			break;
 		case 'getData':
 			$response = $api->getData($data['table'], $data['filters'], $data['sort'], $data['limit']);
+			break;
+		case 'getGenreCounts':
+			$response = $api->getGenreCounts($data['table']);
 			break;
 		case 'getGenres':
 			$response = $api->getGenres($data['type']);

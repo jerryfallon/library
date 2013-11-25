@@ -11,6 +11,7 @@ function Add() {
 			{ title: 'Seen', type: 'checkbox', field: 'seen' },
 			{ title: 'Rating', type: 'text', field: 'rating', value: 0, rules: ['number'] },
 			{ title: 'Discs', type: 'text', field: 'discs', value: 1, rules: ['number'] },
+			{ title: 'Year', type: 'text', field: 'year', rules: ['number'] },
 			{ type: 'submit' }
 		],
 		'games': [
@@ -22,6 +23,7 @@ function Add() {
 			{ title: 'Beaten', type: 'checkbox', field: 'beaten' },
 			{ title: 'Rating', type: 'text', field: 'rating', value: 0, rules: ['number'] },
 			{ title: 'Discs', type: 'text', field: 'discs', value: 1, rules: ['number'] },
+			{ title: 'Year', type: 'text', field: 'year', rules: ['number'] },
 			{ type: 'submit' }
 		]
 	};

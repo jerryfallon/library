@@ -13,11 +13,17 @@
 		<script type="text/javascript" src="js/libraries/kinetic-v4.7.4.min.js"></script>
 		<script type="text/javascript" src="js/libraries/moment.min.js"></script>
 		<script type="text/javascript" src="js/libraries/meteorcharts-v0.0.11.min.js"></script>
+		<script type="text/javascript" src="js/libraries/three.min.js"></script>
+		<script type="text/javascript" src="js/libraries/Detector.js"></script>
+		<script type="text/javascript" src="js/libraries/stats.min.js"></script>
+		<script type="text/javascript" src="js/libraries/stats.min.js"></script>
+		<script type="text/javascript" src="js/libraries/helvetiker_regular.typeface.js"></script>
 
 		<script type="text/javascript" src="js/Db.js"></script>
 		<script type="text/javascript" src="js/List.js"></script>
 		<script type="text/javascript" src="js/Add.js"></script>
 		<script type="text/javascript" src="js/Chart.js"></script>
+		<script type="text/javascript" src="js/Ddd.js"></script>
 		<script type="text/javascript" src="js/init.js"></script>
 	</head>
 	<body>
@@ -87,8 +93,10 @@
 				<select id="chart-switch">
 					<option value="entriesByRating">Entries By Rating</option>
 					<option value="averageRatingOverTime">Average Rating Over Time</option>
+					<option value="entriesByGenre">Entries by Genre - in 3D!</option>
 				</select><br/><br/>
 				<div id="chartContainer"></div>
+				<div id="dddContainer"></div>
 			</div>
 		</div>
 	</body>
@@ -154,12 +162,20 @@
 	<tr>
 		<td class="form-field-title-cell">{{title}}</td>
 		<td>
+		<table>
 		{{#everyNth options 3}}
 			{{#if isModZeroNotFirst}}
-			<br/>
+			</tr>
 			{{/if}}
-			<input type="checkbox" id="{{type}}-{{../field}}-{{genId}}" /> {{genrename}}
+			{{#if isModZero}}
+			<tr>
+			{{/if}}
+			<td><input type="checkbox" id="{{type}}-{{../field}}-{{genId}}" /> {{genrename}}</td>
+			{{#if isLast}}
+			</tr>
+			{{/if}}
 		{{/everyNth}}
+		</table>
 		</td>
 	</tr>
 </script>
