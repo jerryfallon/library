@@ -80,13 +80,6 @@ Ddd.prototype.render = function() {
 		object.rotation.y = timer * 2.5;
 	}
 
-	// Rotate the text
-	// var text;
-	// for(i = 0, l=this.text.length; i < l; i++) {
-	// 	text = this.text[i];
-	// 	text.lookAt(this.camera.position);
-	// }
-
 	// Draw it
 	this.renderer.render(this.scene, this.camera);
 };
@@ -103,7 +96,7 @@ Ddd.prototype.setupScene = function() {
 	var that = this;
 
 	db.getGenreCounts('movies', function(array) {
-		var material, object, obj, radius, color;
+		var material, object, obj, radius, color, point, xOff, yOff, zOff;
 		var textMaterial, text3d, text, group;
 		for(var i = 0, l = array.length; i < l; i++) {
 			obj = array[i];
