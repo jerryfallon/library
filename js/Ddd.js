@@ -1,31 +1,34 @@
 function Ddd() {
 	if(!Detector.webgl) {
 		Detector.addGetWebGLMessage();	
+	} else {
+
+		this.height = 0;
+		this.width = 0;
+		this.calculateDimensions();
+
+		this.container = $('#dddContainer')[0];
+
+		this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 2000);
+		this.camera.position.y = 400;
+
+		this.scene = new THREE.Scene();
+
+		this.renderer = new THREE.WebGLRenderer({ antialias: true });
+		this.renderer.setSize(this.width, this.height);
+
+		this.spheres = [];
+		this.text = [];
+
+		window.addEventListener('resize', bind(this.resize, this), false);
 	}
-
-	this.height = 0;
-	this.width = 0;
-	this.calculateDimensions();
-
-	this.container = $('#dddContainer')[0];
-
-	this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 2000);
-	this.camera.position.y = 400;
-
-	this.scene = new THREE.Scene();
-
-	this.renderer = new THREE.WebGLRenderer({ antialias: true });
-	this.renderer.setSize(this.width, this.height);
-
-	this.spheres = [];
-	this.text = [];
-
-	window.addEventListener('resize', bind(this.resize, this), false);
 }
 
 Ddd.prototype.init = function() {
-	this.setupScene();
-	this.animate();
+	if(!Detector.webgl) {
+		this.setupScene();
+		this.animate();
+	}
 };
 
 Ddd.prototype.animate = function() {
