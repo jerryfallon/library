@@ -1,6 +1,7 @@
 function Ddd() {
 	if(!Detector.webgl) {
-		Detector.addGetWebGLMessage();	
+		var err = Detector.getWebGLErrorMessage();
+		$('#dddContainer').html(err);
 	} else {
 
 		this.height = 0;
@@ -25,7 +26,7 @@ function Ddd() {
 }
 
 Ddd.prototype.init = function() {
-	if(!Detector.webgl) {
+	if(Detector.webgl) {
 		this.setupScene();
 		this.animate();
 	}

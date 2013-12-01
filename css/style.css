@@ -250,3 +250,7 @@ tr.hover {
 #chart {
 	text-align: center;
 }
+
+#dddContainer {
+	display: none;
+}

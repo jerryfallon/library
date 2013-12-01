@@ -6,6 +6,8 @@ function Chart() {
 	this.width = 0;
 	this.height = 0;
 	this.calculateDimensions();
+
+	window.addEventListener('resize', bind(this.resize, this), false);
 }
 
 Chart.prototype.init = function() {
@@ -28,48 +30,6 @@ Chart.prototype.initHandlers = function() {
 			$('#dddContainer').show();
 			ddd.init();
 		}
-	});
-};
-
-Chart.prototype.calculateDimensions = function() {
-	this.width = $('#container').width()-20;
-	this.height = this.width * (9/16);
-};
-
-Chart.prototype.entriesByRating = function() {
-	db.getCounts('movies', function(movieCounts) {
-		db.getCounts('games', function(gameCounts) {
-			// console.log(movieCounts);
-			// console.log(gameCounts);
-
-			// Model object
-			var model = {
-				title: 'Entries By Rating',
-				series: [{
-					title: 'Movies',
-					points: movieCounts
-				},
-				{
-					title: 'Games',
-					points: gameCounts
-				}]
-			};
-
-			// View object
-			var view = {
-				width: this.width,
-				height: this.height,
-				xAxis: {
-					formatter: 'Number'
-				}
-			};
-
-			var lineChart = new MeteorCharts.Line({
-				container: 'chartContainer',
-				model: model,
-				view: view
-			});
-		});
 	});
 };
 
@@ -106,8 +66,8 @@ Chart.prototype.averageRatingByDate = function(date) {
 
 			// View object
 			var view = {
-				width: this.width,
-				height: this.height,
+				width: that.width,
+				height: that.height,
 				xAxis: {
 					formatter: 'Date'
 				},
@@ -125,4 +85,56 @@ Chart.prototype.averageRatingByDate = function(date) {
 
 		}
 	});
+};
+
+Chart.prototype.calculateDimensions = function() {
+	this.width = $('#container').width()-20;
+	this.height = this.width * (9/16);
+};
+
+Chart.prototype.entriesByRating = function() {
+	var that = this;
+	db.getCounts('movies', function(movieCounts) {
+		db.getCounts('games', function(gameCounts) {
+			// console.log(movieCounts);
+			// console.log(gameCounts);
+
+			// Model object
+			var model = {
+				title: 'Entries By Rating',
+				series: [{
+					title: 'Movies',
+					points: movieCounts
+				},
+				{
+					title: 'Games',
+					points: gameCounts
+				}]
+			};
+
+			// View object
+			var view = {
+				width: that.width,
+				height: that.height,
+				xAxis: {
+					formatter: 'Number'
+				}
+			};
+
+			var lineChart = new MeteorCharts.Line({
+				container: 'chartContainer',
+				model: model,
+				view: view
+			});
+		});
+	});
+};
+
+Chart.prototype.resize = function() {
+	this.calculateDimensions();
+	if($('#chart-switch').val() === 'entriesByRating') {
+		this.entriesByRating();
+	} else if($('#chart-switch').val() === 'averageRatingOverTime') {
+		this.averageRatingByDate();
+	}
 };
