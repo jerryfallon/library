@@ -60,6 +60,21 @@
 			$this->db->executeSql($sql, 'delete');
 		}
 
+		public function deleteEntry($table, $id) {
+			$from = $table;
+
+			$where = '';
+			if($table === 'movies') {
+				$where .= 'movId = ' . $id;
+			} else if($table === 'games') {
+				$where .= 'gamId = ' . $id;
+			}
+
+			$set = 'deleted = true';
+
+			return $this->update($from, $where, $set);
+		}
+
 		private function deleteLinks($table, $where) {
 			$from = $table;
 			$where = $where->column . ' = "' . $where->value . '"';
@@ -103,6 +118,7 @@
 					}
 				}
 			}
+			$where .= ($where ? ' AND ' : '') . 'x.deleted = 0';
 
 			$order = '';
 			if(!empty($sort)) {
@@ -254,6 +270,9 @@
 			break;
 		case 'averageBeforeDate':
 			$response = $api->averageBeforeDate($data['date']);
+			break;
+		case 'deleteEntry':
+			$response = $api->deleteEntry($data['table'], $data['id']);
 			break;
 		case 'getCounts':
 			$response = $api->getCounts($data['table']);

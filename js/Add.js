@@ -12,7 +12,8 @@ function Add() {
 			{ title: 'Rating', type: 'text', field: 'rating', value: 0, rules: ['number'] },
 			{ title: 'Discs', type: 'text', field: 'discs', value: 1, rules: ['number'] },
 			{ title: 'Year', type: 'text', field: 'year', rules: ['number'] },
-			{ type: 'submit' }
+			{ type: 'submit' },
+			{ type: 'delete' }
 		],
 		'games': [
 			{ title: 'Title', type: 'text', field: 'title', rules: ['notnull'] },
@@ -24,7 +25,8 @@ function Add() {
 			{ title: 'Rating', type: 'text', field: 'rating', value: 0, rules: ['number'] },
 			{ title: 'Discs', type: 'text', field: 'discs', value: 1, rules: ['number'] },
 			{ title: 'Year', type: 'text', field: 'year', rules: ['number'] },
-			{ type: 'submit' }
+			{ type: 'submit' },
+			{ type: 'delete' }
 		]
 	};
 
@@ -91,6 +93,10 @@ Add.prototype.initHandlers = function() {
 		var id = $(this).data('id');
 		that.populateForm(id);
 	});
+
+	$('.add-form').on('click', '.delete-entry', function() {
+		that.deleteEntry();
+	});
 };
 
 Add.prototype.addCheckboxField = function(title, type, field) {
@@ -100,6 +106,15 @@ Add.prototype.addCheckboxField = function(title, type, field) {
 		title: title,
 		type: type,
 		field: field
+	};
+	$('#'+type+'-form').append(template(context));
+};
+
+Add.prototype.addDeleteField = function(type) {
+	var source = $('#template-delete-field').html();
+	var template = Handlebars.compile(source);
+	var context = {
+		type: type
 	};
 	$('#'+type+'-form').append(template(context));
 };
@@ -205,9 +220,23 @@ Add.prototype.buildForms = function() {
 				case 'multiple':
 					this.addMultipleField(field.title, type, field.field, this[type + 'Genres']);
 					break;
+
+				case 'delete':
+					this.addDeleteField(type);
+					break;
 			}
 		}
 	}
+
+	$('.delete-entry').hide();
+};
+
+Add.prototype.deleteEntry = function() {
+	var that = this;
+	db.deleteEntry(this.type, $('#entry-id').val(), function() {
+		$('.nav-button[data-section='+that.type+']').click();
+		that.resetForm();
+	});
 };
 
 Add.prototype.editEntry = function(type, id) {
@@ -230,7 +259,7 @@ Add.prototype.gatherData = function(addDate) {
 	var field, num, col, val, genre;
 	for(var i in this.schema[this.type]) {
 		field = this.schema[this.type][i];
-		if(field.type !== 'submit') {
+		if(field.type !== 'submit' && field.type !== 'delete') {
 			col = field.field;
 			if(field.type === 'text' || field.type === 'select') {
 				val = $('#'+this.type+'-'+col+'-field').val();
@@ -331,6 +360,10 @@ Add.prototype.populateForm = function(id) {
 					}
 				}
 			}
+
+			// Show delete button
+			$('.delete-entry').show();
+
 			break;
 		}
 	}
@@ -368,6 +401,7 @@ Add.prototype.resetForm = function() {
 		}
 	}
 	$('#search-results').html('');
+	$('.delete-entry').hide();
 	this.searchResults = [];
 	$('.form-submit').removeAttr('disabled');
 };
@@ -427,6 +461,7 @@ Add.prototype.toggleForm = function() {
 };
 
 Add.prototype.validateForm = function() {
+	$('.form-submit').removeAttr('disabled');
 	var field, val, rule;
 	var pass = true;
 	var err = '';
@@ -446,7 +481,7 @@ Add.prototype.validateForm = function() {
 						break;
 
 					case 'number':
-						if(isNaN(val)) {
+						if(isNaN(val) || !val) {
 							pass = false;
 							err += field.field + ' must be a number.<br/>';
 						}
