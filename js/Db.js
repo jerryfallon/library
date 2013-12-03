@@ -12,7 +12,7 @@ Db.prototype.addData = function(table, vals, cb) {
 		table: table,
 		data: JSON.stringify(vals)
 	};
-	console.log(data);
+	//console.log(data);
 	$.post(this.apiUrl, data, function(results) {
 		if(typeof cb === 'function') {
 			cb(results);
@@ -147,7 +147,7 @@ Db.prototype.select = function(table, filters, sort, limit, cb) {
 		sort: sort,
 		limit: limit
 	};
-	console.log(data);
+	//console.log(data);
 	if(this.xhr) { this.xhr.abort(); }
 	this.xhr = $.post(this.apiUrl, data, function(results) {
 		if(typeof cb === 'function') {
