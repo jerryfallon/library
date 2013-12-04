@@ -32,6 +32,18 @@ Db.prototype.averageRatingByDate = function(date, cb) {
 	}, 'json');
 };
 
+Db.prototype.averageRatingByRelease = function(table, cb) {
+	var data = {
+		command: 'averageRatingByRelease',
+		table: table
+	};
+	$.post(this.apiUrl, data, function(results) {
+		if(typeof cb === 'function') {
+			cb(results);
+		}
+	}, 'json');
+};
+
 Db.prototype.checkLogin = function() {
 	if($.cookie('usrId')) {
 		this.loginSuccess($.cookie('usrId'), true);

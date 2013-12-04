@@ -29,6 +29,10 @@ Chart.prototype.initHandlers = function() {
 			$('#chartContainer').hide();
 			$('#dddContainer').show();
 			ddd.init();
+		} else if($(this).val() === 'averageRatingByRelease') {
+			$('#dddContainer').hide();
+			$('#chartContainer').show();
+			that.averageRatingByRelease();
 		}
 	});
 };
@@ -87,6 +91,51 @@ Chart.prototype.averageRatingByDate = function(date) {
 	});
 };
 
+Chart.prototype.averageRatingByRelease = function(date) {
+	var that = this;
+	db.averageRatingByRelease('movies', function(movieCounts) {
+		db.averageRatingByRelease('games', function(gameCounts) {
+			movieCounts = that.updateDates(movieCounts);
+			gameCounts = that.updateDates(gameCounts);
+
+			// console.log(movieCounts);
+			// console.log(gameCounts);
+
+			// Model object
+			var model = {
+				title: 'Average Rating by Release Year',
+				series: [{
+					title: 'Movies',
+					points: movieCounts
+				},
+				{
+					title: 'Games',
+					points: gameCounts
+				}]
+			};
+
+			// View object
+			var view = {
+				width: that.width,
+				height: that.height,
+				xAxis: {
+					formatter: 'Date'
+				},
+				yAxis: {
+					min: 0,
+					max: 10
+				}
+			};
+
+			var lineChart = new MeteorCharts.Line({
+				container: 'chartContainer',
+				model: model,
+				view: view
+			});
+		});
+	});
+};
+
 Chart.prototype.calculateDimensions = function() {
 	this.width = $('#container').width()-20;
 	this.height = this.width * (9/16);
@@ -137,4 +186,13 @@ Chart.prototype.resize = function() {
 	} else if($('#chart-switch').val() === 'averageRatingOverTime') {
 		this.averageRatingByDate();
 	}
+};
+
+Chart.prototype.updateDates = function(array) {
+	var entry;
+	for(var i in array) {
+		entry = array[i];
+		entry.x = Date.parse(entry.x)/1000;
+	}
+	return array;
 };

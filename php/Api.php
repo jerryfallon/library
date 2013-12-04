@@ -54,6 +54,14 @@
 			return $this->selectDistinct($select, $from, $where, null, null, null);
 		}
 
+		public function averageRatingByRelease($table) {
+			$select = 'AVG(rating) y, year x';
+			$from = mysql_real_escape_string($table);
+			$where = 'rating > 0 AND year > 0';
+			$group = 'year';
+			return $this->selectDistinct($select, $from, $where, $group, null, null);
+		}
+
 		private function delete($from, $where) {
 			$sql = 'DELETE FROM ' . $from;
 			$sql .= ' WHERE ' . $where;
@@ -270,6 +278,9 @@
 			break;
 		case 'averageBeforeDate':
 			$response = $api->averageBeforeDate($data['date']);
+			break;
+		case 'averageRatingByRelease':
+			$response = $api->averageRatingByRelease($data['table']);
 			break;
 		case 'deleteEntry':
 			$response = $api->deleteEntry($data['table'], $data['id']);
